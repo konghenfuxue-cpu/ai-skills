@@ -1,0 +1,28 @@
+# Obsidian 界面状态
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+
+# 临时文件
+.trash/
+temp/
+tmp/
+output/
+*.log
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 不保存实际电子书和漫画
+*.cbz
+*.cbr
+*.rar
+*.zip
+*.epub
+*.pdf
+
+# 密钥与本地敏感配置
+.env
+*.key
+secrets.*

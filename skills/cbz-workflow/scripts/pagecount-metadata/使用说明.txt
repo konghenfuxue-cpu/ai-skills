@@ -1,0 +1,59 @@
+CBZ 页数写入元数据工具
+========================
+
+用途
+----
+统计 CBZ 内的图片数量，并写入 ComicInfo.xml：
+1. PageCount：供支持 ComicInfo 的漫画阅读器识别。
+2. Summary：在原有简介末尾空一行，添加“页数：XX 页”，供 CLiB 显示。
+3. ComicBookInfo ZIP 注释：供 Calibre 导入时把内容读取到“简介/评论”。
+
+使用方法
+--------
+方法一：双击“一键写入CBZ页数.cmd”，按弹窗选择 CBZ 或文件夹。
+方法二：把一个或多个 CBZ 拖到“一键写入CBZ页数.cmd”上。
+方法三：把文件夹拖到 CMD 上，批量处理文件夹第一层的所有 CBZ。
+
+Calibre 书库批量模式（数百本推荐）
+----------------------------------
+1. 先在 Calibre 中把当前元数据嵌入漫画，然后完全退出 Calibre。
+2. 把整个 Calibre 书库根文件夹拖到“Calibre批量处理.cmd”上。
+3. 工具会递归扫描所有子目录，只处理 CBZ，不创建备份文件夹。
+4. 完成后重新打开 Calibre，批量从漫画压缩包导入元数据。
+
+Calibre 需保留合集简介分行时，请在 Embed Comic Metadata 插件配置中：
+- 启用从 ZIP comment / ComicBookInfo 读取。
+- 关闭从 ComicInfo.xml 读取（它是给漫画阅读器的纯文本副本）。
+这样 Calibre 会使用工具生成的 HTML 分行简介。
+
+不要把数百个 CBZ 一起拖到 CMD；Windows 会因命令行过长而拒绝运行。
+Calibre 批量模式采用临时文件、完整性校验和原子替换，但仍建议先测试少量文件。
+
+处理规则
+--------
+- 自动保留原有标题、作者、系列、简介等 ComicInfo 元数据。
+- 简介有内容时，末尾空一行后添加页数。
+- 为 Calibre 自动转换简介换行为 HTML 分段，导回后不会连成一行。
+- 自动修复“本合集按以下顺序合并”后被写成单行的 01\.、02\.…清单。
+- 再次运行会更新旧页数，不会重复追加。
+- 同时写入标准 PageCount 字段。
+- 同时写入 Calibre 可读取的 ComicBookInfo 元数据；新导入 Calibre 时简介会带页数。
+- 统计 JPG、PNG、WEBP、GIF、AVIF 等常见图片格式。
+- 默认在 CBZ 同目录的“_CBZ元数据备份”中保存原文件。
+- 同名备份已经存在时不会覆盖。
+- 写入采用临时文件和校验机制；失败时原 CBZ 保持不变。
+- 批量扫描时不会处理“_CBZ元数据备份”中的 CBZ。
+- 如果提示文件被占用，请完全关闭 Calibre 和漫画阅读器后再运行。
+
+命令行用法（可选）
+------------------
+python cbz_pagecount_metadata.py "D:\漫画\一本漫画.cbz"
+python cbz_pagecount_metadata.py "D:\漫画" -r
+
+-r / --recursive：扫描所有子文件夹。
+--no-backup：不创建备份（不推荐）。
+
+环境要求
+--------
+Windows 10/11，Python 3.8 或更高版本。
+无需安装第三方 Python 库。
