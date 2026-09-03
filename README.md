@@ -2,11 +2,14 @@
 
 这个仓库用于保存个人 AI 工作流、脚本、参考资料和测试记录。
 
+日常使用方法请查看：[CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)。
+
 ## Skill 目录
 
 | Skill | 状态 | 用途 | 最近测试 |
 |---|---|---|---|
 | cbz-workflow | 测试中 | CBZ 合并、拆分、检测和元数据 | 2026-09-03 本地核心流程测试通过 |
+| skill-repository-manager | 测试中 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-03 新建 |
 | epub-repair | 计划中 | EPUB 目录和结构修复 | 尚未创建 |
 | calibre-workflow | 计划中 | Calibre 书库整理 | 尚未创建 |
 
