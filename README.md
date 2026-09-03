@@ -4,6 +4,8 @@
 
 日常使用方法请查看：[CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)。
 
+Skill 创建、备份、安装和同步方法请查看：[Skill 仓库管理使用说明](Skill仓库管理使用说明.md)。
+
 ## Skill 目录
 
 | Skill | 状态 | 用途 | 最近测试 |
