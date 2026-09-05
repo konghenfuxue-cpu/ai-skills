@@ -2,8 +2,11 @@
 
 这个公开仓库收录可在 Codex 中使用的 Agent Skills、配套脚本、参考资料和测试记录。当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
+当前公开稳定版：[`v1.0.0`](https://github.com/konghenfuxue-cpu/ai-skills/tree/v1.0.0)。无需 GitHub 账号即可克隆或下载。
+
 详细教程：
 
+- [公开版安装与使用教程](公开版安装与使用教程.md)
 - [CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)
 - [Skill 仓库管理使用说明](Skill仓库管理使用说明.md)
 - [EPUB Repair 指南](skills/epub-repair/SKILL.md)
