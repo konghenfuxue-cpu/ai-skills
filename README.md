@@ -38,6 +38,10 @@ python -m pip install jmcomic Pillow zhconv
 
 公开文档必须使用通用的占位符和说明，不包含维护者的用户名、电脑路径、邮箱或凭据。本地维护时，复制 `LOCAL.md.example` 为 `LOCAL.md`，并在其中记录路径和覆盖规则。`LOCAL.md` 已被 Git 忽略，任何 AI 在修改或发布前都应先读取它；提交前仍要确认暂存文件不包含本地个人化内容。
 
+## 许可证
+
+本项目以 [MIT License](LICENSE) 发布。你可以自由使用、复制、修改、分发和商用，但需在分发版本中保留版权声明与许可证文本。
+
 ## Skill 目录
 
 | Skill | 状态 | 用途 | 最近测试 |
