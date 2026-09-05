@@ -12,7 +12,7 @@ description: 管理用户的个人 Agent Skills 源仓库，包括创建或更�
 ## 核心原则
 
 1. `D:\ai-skill\skill` 是唯一源仓库；正式修改只在这里完成。
-2. `%USERPROFILE%\.codex\skills` 中的个人 Skill 是安装副本，不在其中手工维护。
+2. `C:\Users\lv\.codex\skills` 中的个人 Skill 是安装副本，不在其中手工维护。
 3. GitHub 公开仓库用于版本历史、备份与分享，不存放真实漫画、电子书、密钥、Cookie、账号凭据或大文件。
 4. 每个 Skill 使用独立文件夹，入口必须准确命名为 `SKILL.md`。
 5. 新建或重大修改后先验证，再提交、推送和安装。

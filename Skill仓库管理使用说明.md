@@ -54,7 +54,7 @@ https://github.com/konghenfuxue-cpu/ai-skills
 ### Codex：安装与执行副本
 
 ```text
-%USERPROFILE%\.codex\skills
+C:\Users\lv\.codex\skills
 ```
 
 用途：让 Codex 发现和调用个人 Skill。
@@ -179,15 +179,15 @@ D:\ai-skill\skill\archive\旧版脚本
 
 ```text
 Python 3.11.9 64 位
-python
+C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe
 ```
 
 中文 Windows 上验证 Skill：
 
 ```powershell
 $env:PYTHONUTF8='1'
-& python `
-  "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" `
+& 'C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe' `
+  'C:\Users\lv\.codex\skills\.system\skill-creator\scripts\quick_validate.py' `
   'D:\ai-skill\skill\skills\skill-name'
 ```
 
@@ -266,7 +266,7 @@ git -C 'D:\ai-skill\skill' push origin main
 安装位置：
 
 ```text
-%USERPROFILE%\.codex\skills\<skill-name>
+C:\Users\lv\.codex\skills\<skill-name>
 ```
 
 推荐顺序：
@@ -340,4 +340,4 @@ git push --force
 
 只记住一条也可以：
 
-> 正式修改永远回到 `D:\ai-skill\skill`，测试通过后上传 GitHub，最后再更新 `%USERPROFILE%\.codex\skills` 中的安装副本。
+> 正式修改永远回到 `D:\ai-skill\skill`，测试通过后上传 GitHub，最后再更新 `C:\Users\lv\.codex\skills` 中的安装副本。

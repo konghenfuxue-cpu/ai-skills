@@ -21,7 +21,7 @@
 |---|---|
 | Obsidian 源仓库 | `D:\ai-skill\skill` |
 | Skill 源文件 | `D:\ai-skill\skill\skills\cbz-workflow` |
-| Codex 安装副本 | `%USERPROFILE%\.codex\skills\cbz-workflow` |
+| Codex 安装副本 | `C:\Users\lv\.codex\skills\cbz-workflow` |
 | GitHub 公开仓库 | `https://github.com/konghenfuxue-cpu/ai-skills` |
 
 重要原则：正式修改始终在 Obsidian 源仓库完成，不要直接编辑 Codex 安装副本。
@@ -154,7 +154,7 @@ GitHub 中的源仓库更新后，需要重新同步或安装 `cbz-workflow`，C
 
 ```text
 D:\ai-skill\skill\skills\cbz-workflow
-%USERPROFILE%\.codex\skills\cbz-workflow
+C:\Users\lv\.codex\skills\cbz-workflow
 ```
 
 前者是唯一源文件位置；后者只是 Codex 加载用的安装副本。
@@ -165,7 +165,7 @@ D:\ai-skill\skill\skills\cbz-workflow
 
 ```text
 Python 3.11.9 64 位
-python
+C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe
 ```
 
 JMComic 本地打包相关依赖已经确认：
@@ -198,7 +198,7 @@ python -c "import sys; print(sys.executable); print(sys.maxsize > 2**32)"
 若仍未出现，重新启动 Codex，检查下面的文件是否存在：
 
 ```text
-%USERPROFILE%\.codex\skills\cbz-workflow\SKILL.md
+C:\Users\lv\.codex\skills\cbz-workflow\SKILL.md
 ```
 
 ### CMD 提示找不到 Python

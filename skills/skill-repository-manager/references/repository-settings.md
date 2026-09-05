@@ -21,22 +21,24 @@
 GitHub Desktop 已安装在：
 
 ```text
-%LOCALAPPDATA%\GitHubDesktop\GitHubDesktop.exe
+C:\Users\lv\AppData\Local\GitHubDesktop\GitHubDesktop.exe
 ```
 
 ## Codex 安装位置
 
-- 用户 Skill 根目录：`%USERPROFILE%\.codex\skills`
-- `cbz-workflow` 安装副本：`%USERPROFILE%\.codex\skills\cbz-workflow`
-- 本 Skill 安装后位置：`%USERPROFILE%\.codex\skills\skill-repository-manager`
+- 用户 Skill 根目录：`C:\Users\lv\.codex\skills`
+- `cbz-workflow` 安装副本：`C:\Users\lv\.codex\skills\cbz-workflow`
+- 本 Skill 安装后位置：`C:\Users\lv\.codex\skills\skill-repository-manager`
 
 安装副本只供 Codex 加载，不作为正式编辑位置。
 
 ## Python 与 Git
 
 - Python：3.11.9 64 位
-- Python：建议通过 `python` 或 `py -3.11` 调用，具体路径因电脑而异
+- Python 路径：`C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe`
 - Git：已安装
+- Git 用户名：`黑背雪`
+- Git 邮箱：`konghenfuxue@gmail.com`
 
 ## 当前已知 Skill
 
