@@ -142,11 +142,14 @@ def update_merge_manifest(manifest: dict, target_number: int) -> dict:
     updated = copy.deepcopy(manifest)
     removed_record = updated["sources"].pop(removed_index)
     removed_stored_names: set[str] = set()
+    removed_mapped_names: set[str] = set()
     stored_renames: dict[str, str] = {}
 
     for member in removed_record.get("members", []):
         if member.get("storage") == "stored" and member.get("stored_name"):
             removed_stored_names.add(str(member["stored_name"]).replace("\\", "/"))
+        elif member.get("storage") == "mapped" and member.get("merged_name"):
+            removed_mapped_names.add(str(member["merged_name"]).replace("\\", "/"))
 
     for new_position, record in enumerate(updated["sources"], 1):
         old_position = int(record.get("position", new_position))
@@ -176,7 +179,9 @@ def update_merge_manifest(manifest: dict, target_number: int) -> dict:
     return {
         "manifest": updated,
         "removed_record": removed_record,
+        "removed_position": removed_index + 1,
         "removed_stored_names": removed_stored_names,
+        "removed_mapped_names": removed_mapped_names,
         "stored_renames": stored_renames,
     }
 
@@ -184,7 +189,10 @@ def update_merge_manifest(manifest: dict, target_number: int) -> dict:
 def rewritten_member_path(name: str, target_number: int, manifest_update: dict | None) -> str | None:
     normalized = name.replace("\\", "/")
     if manifest_update is not None:
-        if normalized in manifest_update["removed_stored_names"]:
+        if (
+            normalized in manifest_update["removed_stored_names"]
+            or normalized in manifest_update["removed_mapped_names"]
+        ):
             return None
         renamed_stored = manifest_update["stored_renames"].get(normalized)
         if renamed_stored is not None:
@@ -466,6 +474,10 @@ def analyze(source_path: Path, target_number: int) -> dict:
         manifest_update = (
             update_merge_manifest(manifest, target_number) if manifest is not None else None
         )
+        summary_item_number = (
+            manifest_update["removed_position"]
+            if manifest_update is not None else target_number
+        )
         groups: dict[int, set[str]] = {}
         for info in infos:
             group = numeric_top_group(info.filename)
@@ -498,8 +510,8 @@ def analyze(source_path: Path, target_number: int) -> dict:
             summary = str(cbi["ComicBookInfo/1.0"].get("comments", ""))
         parsed = split_collection_entries(summary or "")
         title = ""
-        if parsed is not None and 0 < target_number <= len(parsed[1]):
-            title = parsed[1][target_number - 1]
+        if parsed is not None and 0 < summary_item_number <= len(parsed[1]):
+            title = parsed[1][summary_item_number - 1]
 
         old_image_names = [info.filename.replace("\\", "/") for info in infos if is_image(info.filename)]
         retained_names = []
@@ -533,6 +545,7 @@ def analyze(source_path: Path, target_number: int) -> dict:
             "retained_image_names": retained_names,
             "manifest_name": manifest_name,
             "manifest_update": manifest_update,
+            "summary_item_number": summary_item_number,
         }
 
 
@@ -548,7 +561,7 @@ def rewrite_cbz(source_path: Path, output_path: Path, target_number: int, analys
 
         new_page_count = int(analysis["new_page_count"])
         new_summary, removed_title, summary_updated = update_collection_summary(
-            base_summary, target_number, new_page_count
+            base_summary, int(analysis["summary_item_number"]), new_page_count
         )
         summary_node.text = new_summary
         get_or_create_child(root, "PageCount").text = str(new_page_count)
@@ -715,7 +728,7 @@ def main() -> int:
     print("CBZ 删除指定子合集 - 执行前预览")
     print("=" * 68)
     print(f"原文件：{source_path}")
-    print(f"目标项：{details['target_label']}  (第 {target_number} 项)")
+    print(f"目标数字分组：{details['target_label']}")
     print(f"作品名：{details['title'] or '简介中未识别到名称'}")
     print(f"将删除：{len(details['target_images'])} 张图片，{details['target_file_count']} 个文件")
     print(f"总页数：{details['old_page_count']} -> {details['new_page_count']}")
@@ -725,6 +738,7 @@ def main() -> int:
             "可逆清单：将删除来源记录 "
             f"{removed_source.get('original_name') or removed_source.get('display_title') or details['target_label']}"
         )
+        print(f"清单位置：第 {details['summary_item_number']} 项")
     print(f"新文件：{output_path}")
     print(f"原文件大小：{human_size(source_size)}")
     print(f"可用空间：{human_size(free_space)}")
