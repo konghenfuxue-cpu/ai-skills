@@ -1,0 +1,54 @@
+name: 错误报告
+description: 报告可复现的脚本或 Skill 问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: 请勿上传真实书籍、Cookie、Token、账号信息或私人路径。优先使用自动生成的最小样本。
+  - type: dropdown
+    id: skill
+    attributes:
+      label: 受影响的 Skill
+      options:
+        - cbz-workflow
+        - epub-repair
+        - calibre-workflow
+        - skill-repository-manager
+        - 仓库文档或安装流程
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本或提交
+      placeholder: v1.0.0 或提交号
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 说明执行的命令、输入类型和实际结果。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境
+      placeholder: Windows 11、PowerShell 7、Python 3.11、Calibre 版本等
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我已移除真实书籍、凭据、Cookie、Token 和私人路径。
+          required: true

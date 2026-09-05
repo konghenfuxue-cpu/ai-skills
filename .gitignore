@@ -26,6 +26,8 @@ __pycache__/
 .env
 *.key
 secrets.*
+**/option.yml
+**/selected_id.txt
 
 # 维护者本机路径与个人化说明（不提交）
 LOCAL.md

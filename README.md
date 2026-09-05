@@ -26,6 +26,13 @@
 - [EPUB Repair 指南](skills/epub-repair/SKILL.md)
 - [Calibre Workflow 指南](skills/calibre-workflow/SKILL.md)
 
+参与和维护：
+
+- [贡献指南](CONTRIBUTING.md)
+- [安全策略](SECURITY.md)
+- [社区行为准则](CODE_OF_CONDUCT.md)
+- [变更日志](CHANGELOG.md)
+
 ## 安装前准备
 
 - 安装 [Git](https://git-scm.com/)、PowerShell 7 和 64 位 Python 3.11 或更高版本。
