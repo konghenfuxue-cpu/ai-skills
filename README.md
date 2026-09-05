@@ -46,8 +46,8 @@ python -m pip install jmcomic Pillow zhconv
 
 | Skill | 状态 | 用途 | 最近测试 |
 |---|---|---|---|
-| cbz-workflow | 测试中 | CBZ 合并、拆分、检测和元数据 | 2026-09-03 本地核心流程测试通过 |
-| skill-repository-manager | 测试中 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-03 新建 |
+| cbz-workflow | 测试中 | CBZ 合并、拆分、检测和元数据 | 2026-09-05 可逆删除边界与真实 CBZ 兼容修复通过 |
+| skill-repository-manager | 稳定 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-05 多次真实提交、推送与安装同步通过 |
 | epub-repair | 计划中 | EPUB 目录和结构修复 | 尚未创建 |
 | calibre-workflow | 计划中 | Calibre 书库整理 | 尚未创建 |
 

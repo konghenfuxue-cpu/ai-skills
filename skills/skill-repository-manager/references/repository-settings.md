@@ -44,5 +44,5 @@ C:\Users\lv\AppData\Local\GitHubDesktop\GitHubDesktop.exe
 
 | Skill | 源目录 | 状态 |
 |---|---|---|
-| `cbz-workflow` | `skills/cbz-workflow` | 测试中，已安装 |
-| `skill-repository-manager` | `skills/skill-repository-manager` | 新建，待安装 |
+| `cbz-workflow` | `skills/cbz-workflow` | 测试中，已安装；2026-09-05 可逆删除边界与真实 CBZ 兼容修复通过 |
+| `skill-repository-manager` | `skills/skill-repository-manager` | 稳定，已安装；2026-09-05 多次真实提交、推送与安装同步通过 |
