@@ -2,9 +2,12 @@
 
 这个公开仓库收录可在 Codex 中使用的 Agent Skills、配套脚本、参考资料和测试记录。当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
-日常使用方法请查看：[CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)。
+详细教程：
 
-Skill 创建、备份、安装和同步方法请查看：[Skill 仓库管理使用说明](Skill仓库管理使用说明.md)。
+- [CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)
+- [Skill 仓库管理使用说明](Skill仓库管理使用说明.md)
+- [EPUB Repair 指南](skills/epub-repair/SKILL.md)
+- [Calibre Workflow 指南](skills/calibre-workflow/SKILL.md)
 
 ## 安装前准备
 
@@ -18,21 +21,57 @@ Skill 创建、备份、安装和同步方法请查看：[Skill 仓库管理使�
 ```powershell
 git clone https://github.com/konghenfuxue-cpu/ai-skills.git
 Copy-Item -Recurse -Force '.\ai-skills\skills\cbz-workflow' "$env:USERPROFILE\.codex\skills\cbz-workflow"
+Copy-Item -Recurse -Force '.\ai-skills\skills\epub-repair' "$env:USERPROFILE\.codex\skills\epub-repair"
+Copy-Item -Recurse -Force '.\ai-skills\skills\calibre-workflow' "$env:USERPROFILE\.codex\skills\calibre-workflow"
 Copy-Item -Recurse -Force '.\ai-skills\skills\skill-repository-manager' "$env:USERPROFILE\.codex\skills\skill-repository-manager"
 ```
 
-安装后重启 Codex。如果只需要某一个 Skill，只复制对应子目录即可。安装 JMComic 可选依赖：
+安装后重启 Codex。若只需要一个 Skill，只复制对应子目录即可。`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。安装 CBZ 中 JMComic 下载与打包功能的可选依赖：
 
 ```powershell
 python -m pip install jmcomic Pillow zhconv
 ```
+
+## 快速开始
+
+### 在 Codex 中使用
+
+将目标文件或目录的准确路径告诉 Codex，并在请求中写出 Skill 名称即可。首次操作真实文件时，请使用副本。
+
+```text
+使用 $epub-repair 检查 "D:\\Books\\book.epub"，只报告问题，不要修改原文件。
+```
+
+```text
+使用 $calibre-workflow 审计 "D:\\Calibre Library"，生成 JSON 报告；不要修改 metadata.db 或书籍文件。
+```
+
+```text
+使用 $cbz-workflow 检查这个 CBZ 副本的页数与 ComicInfo.xml；先报告结果，不要覆盖原件。
+```
+
+```text
+使用 $skill-repository-manager 检查我的源仓库、GitHub 和 Codex 安装副本是否同步。
+```
+
+### 直接运行只读检查
+
+不使用 Codex 时，也可以在仓库根目录运行以下命令。示例均只读，不会覆盖或删除原文件。
+
+```powershell
+python '.\skills\epub-repair\scripts\epub_check_repair.py' 'D:\Books\book.epub'
+python '.\skills\calibre-workflow\scripts\audit_calibre_library.py' 'D:\Calibre Library' --report '.\calibre-audit.json'
+& '.\skills\skill-repository-manager\scripts\check-skill-repo.ps1'
+```
+
+EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 SQLite 只读模式打开数据库。CBZ 的合并、拆分、元数据写入和删除子合集会修改或创建文件，请先阅读对应工具目录中的 `使用说明.txt`，并使用测试副本。
 
 ## 使用前提醒
 
 - 这些脚本会处理本地文件；覆盖、删除或原地更新前请仔细确认目标。
 - 仓库不包含漫画、电子书、JMComic 配置、Cookie、Token 或 API Key。
 - 使用 JMComic 功能时，请自行确认当地法律、站点条款和内容授权。
-- 部分功能仍处于“测试中”，详见下方状态表和各 Skill 的 `evals/`。
+- `cbz-workflow` 仍处于“测试中”，详见下方状态表和各 Skill 的 `evals/`。
 
 ## 维护者本地配置
 
