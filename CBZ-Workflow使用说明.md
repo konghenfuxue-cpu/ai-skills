@@ -21,8 +21,8 @@
 |---|---|
 | Obsidian 源仓库 | `D:\ai-skill\skill` |
 | Skill 源文件 | `D:\ai-skill\skill\skills\cbz-workflow` |
-| Codex 安装副本 | `C:\Users\lv\.codex\skills\cbz-workflow` |
-| GitHub 私有仓库 | `https://github.com/konghenfuxue-cpu/ai-skills` |
+| Codex 安装副本 | `%USERPROFILE%\.codex\skills\cbz-workflow` |
+| GitHub 公开仓库 | `https://github.com/konghenfuxue-cpu/ai-skills` |
 
 重要原则：正式修改始终在 Obsidian 源仓库完成，不要直接编辑 Codex 安装副本。
 
@@ -154,7 +154,7 @@ GitHub 中的源仓库更新后，需要重新同步或安装 `cbz-workflow`，C
 
 ```text
 D:\ai-skill\skill\skills\cbz-workflow
-C:\Users\lv\.codex\skills\cbz-workflow
+%USERPROFILE%\.codex\skills\cbz-workflow
 ```
 
 前者是唯一源文件位置；后者只是 Codex 加载用的安装副本。
@@ -165,7 +165,7 @@ C:\Users\lv\.codex\skills\cbz-workflow
 
 ```text
 Python 3.11.9 64 位
-C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe
+python
 ```
 
 JMComic 本地打包相关依赖已经确认：
@@ -198,7 +198,7 @@ python -c "import sys; print(sys.executable); print(sys.maxsize > 2**32)"
 若仍未出现，重新启动 Codex，检查下面的文件是否存在：
 
 ```text
-C:\Users\lv\.codex\skills\cbz-workflow\SKILL.md
+%USERPROFILE%\.codex\skills\cbz-workflow\SKILL.md
 ```
 
 ### CMD 提示找不到 Python
@@ -212,6 +212,12 @@ python --version
 ### 无法替换 CBZ
 
 关闭 Calibre、Calibre-Web、漫画阅读器以及可能占用文件的窗口，再对副本重试。
+
+### 删除子合集后 CBZ 无法打开
+
+旧版删除工具曾对每个成员无条件启用 ZIP64。即使 CBZ 很小，成员也会被标记为需要 ZIP 4.5；Python 和部分解压工具仍能读取，但某些漫画阅读器可能拒绝打开。
+
+修正版只在单个成员实际超过 ZIP32 限制时自动启用 ZIP64。遇到旧版生成的文件时，可在保留原文件的前提下重新打包；修复后应检查 CRC、图片页数、`ComicInfo.xml`、可逆清单以及普通成员的 ZIP 版本标记。
 
 ### GitHub Desktop 没有上传按钮
 

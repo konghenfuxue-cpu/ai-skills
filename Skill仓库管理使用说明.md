@@ -45,7 +45,7 @@ https://github.com/konghenfuxue-cpu/ai-skills
 
 - 仓库：`ai-skills`
 - 所有者：`konghenfuxue-cpu`
-- 可见性：Private
+- 可见性：Public
 - 默认分支：`main`
 - 远程名称：`origin`
 
@@ -54,7 +54,7 @@ https://github.com/konghenfuxue-cpu/ai-skills
 ### Codex：安装与执行副本
 
 ```text
-C:\Users\lv\.codex\skills
+%USERPROFILE%\.codex\skills
 ```
 
 用途：让 Codex 发现和调用个人 Skill。
@@ -179,15 +179,15 @@ D:\ai-skill\skill\archive\旧版脚本
 
 ```text
 Python 3.11.9 64 位
-C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe
+python
 ```
 
 中文 Windows 上验证 Skill：
 
 ```powershell
 $env:PYTHONUTF8='1'
-& 'C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe' `
-  'C:\Users\lv\.codex\skills\.system\skill-creator\scripts\quick_validate.py' `
+& python `
+  "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" `
   'D:\ai-skill\skill\skills\skill-name'
 ```
 
@@ -266,7 +266,7 @@ git -C 'D:\ai-skill\skill' push origin main
 安装位置：
 
 ```text
-C:\Users\lv\.codex\skills\<skill-name>
+%USERPROFILE%\.codex\skills\<skill-name>
 ```
 
 推荐顺序：
@@ -296,7 +296,7 @@ Obsidian 修改
 - [ ] 没有 `.env`、`*.key`、Cookie、Token 或 API Key；
 - [ ] 没有下载日志、临时输出或 Python 缓存；
 - [ ] `.gitignore` 仍然生效；
-- [ ] GitHub 远程仍指向私有 `ai-skills`；
+- [ ] GitHub 远程仍指向预期的 `ai-skills`；
 - [ ] 新脚本没有来源不明的下载执行命令；
 - [ ] 本地路径和账号信息属于允许保存的配置；
 - [ ] 删除、覆盖和恢复操作已经确认准确目标。
@@ -330,7 +330,7 @@ git push --force
 | 项目 | 状态 |
 |---|---|
 | Obsidian 源仓库 | 正常 |
-| GitHub 私有仓库 | 已连接 |
+| GitHub 公开仓库 | 已连接 |
 | 默认分支 | `main` |
 | `cbz-workflow` | 已保存、已上传、已安装 |
 | `skill-repository-manager` | 已保存、已上传、已安装 |
@@ -340,4 +340,4 @@ git push --force
 
 只记住一条也可以：
 
-> 正式修改永远回到 `D:\ai-skill\skill`，测试通过后上传 GitHub，最后再更新 `C:\Users\lv\.codex\skills` 中的安装副本。
+> 正式修改永远回到 `D:\ai-skill\skill`，测试通过后上传 GitHub，最后再更新 `%USERPROFILE%\.codex\skills` 中的安装副本。

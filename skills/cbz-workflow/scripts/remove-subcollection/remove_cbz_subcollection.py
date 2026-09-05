@@ -29,6 +29,8 @@ IMAGE_EXTENSIONS = {
     ".tif", ".tiff", ".avif", ".jxl", ".heic", ".heif", ".svg",
 }
 COMICINFO_BASENAME = "comicinfo.xml"
+MANIFEST_PATH = "META-INF/cbz-merge-manifest.json"
+RESTORE_ROOT = ".cbz-restore"
 PAGE_LINE_RE = re.compile(
     r"(?im)^[ \t]*(?:页数|頁數|page[ \t]*count|pages?)[ \t]*[:：][ \t]*"
     r"\d+[ \t]*(?:页|頁)?[ \t]*$"
@@ -94,6 +96,100 @@ def renamed_path(name: str, target_number: int) -> str | None:
         new_label = str(number - 1).zfill(len(label))
         return new_label + "/" + suffix
     return normalized
+
+
+def read_merge_manifest(zf: zipfile.ZipFile) -> tuple[dict | None, str | None]:
+    """读取新版可逆合并清单；存在但损坏时停止，避免破坏还原能力。"""
+    matches = [
+        info.filename
+        for info in zf.infolist()
+        if info.filename.replace("\\", "/").casefold() == MANIFEST_PATH.casefold()
+    ]
+    if not matches:
+        return None, None
+    if len(matches) != 1:
+        raise ValueError("发现多个可逆合并清单，为避免误改已停止")
+    try:
+        payload = json.loads(zf.read(matches[0]).decode("utf-8-sig"))
+    except Exception as exc:
+        raise ValueError(f"可逆合并清单无法解析，为保护还原元数据已停止：{exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("可逆合并清单不是 JSON 对象，为保护还原元数据已停止")
+    if payload.get("format") != "openai-cbz-reversible-merge":
+        raise ValueError("可逆合并清单格式不受支持，为保护还原元数据已停止")
+    if int(payload.get("version", 0)) != 1:
+        raise ValueError(f"不支持的可逆合并清单版本：{payload.get('version')}")
+    if not isinstance(payload.get("sources"), list) or not payload["sources"]:
+        raise ValueError("可逆合并清单中没有原 CBZ 记录")
+    return payload, matches[0]
+
+
+def update_merge_manifest(manifest: dict, target_number: int) -> dict:
+    """删除对应来源，并同步清单中的位置、分组路径和还原区路径。"""
+    sources = manifest["sources"]
+    matches = [
+        index
+        for index, record in enumerate(sources)
+        if str(record.get("folder", "")).isdigit()
+        and int(record["folder"]) == target_number
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            f"可逆合并清单中应有且仅有一个分组 {target_number:03d}，实际找到 {len(matches)} 个"
+        )
+
+    removed_index = matches[0]
+    updated = copy.deepcopy(manifest)
+    removed_record = updated["sources"].pop(removed_index)
+    removed_stored_names: set[str] = set()
+    stored_renames: dict[str, str] = {}
+
+    for member in removed_record.get("members", []):
+        if member.get("storage") == "stored" and member.get("stored_name"):
+            removed_stored_names.add(str(member["stored_name"]).replace("\\", "/"))
+
+    for new_position, record in enumerate(updated["sources"], 1):
+        old_position = int(record.get("position", new_position))
+        record["position"] = new_position
+        folder = str(record.get("folder", ""))
+        if folder.isdigit() and int(folder) > target_number:
+            record["folder"] = str(int(folder) - 1).zfill(len(folder))
+        for member in record.get("members", []):
+            if member.get("storage") == "mapped" and member.get("merged_name"):
+                old_name = str(member["merged_name"]).replace("\\", "/")
+                new_name = renamed_path(old_name, target_number)
+                if new_name is None:
+                    raise ValueError(f"剩余来源错误引用被删除分组：{old_name}")
+                member["merged_name"] = new_name
+            elif member.get("storage") == "stored" and member.get("stored_name"):
+                old_name = str(member["stored_name"]).replace("\\", "/")
+                prefix = f"{RESTORE_ROOT}/{old_position:03d}/"
+                new_name = (
+                    f"{RESTORE_ROOT}/{new_position:03d}/" + old_name[len(prefix):]
+                    if old_name.startswith(prefix)
+                    else old_name
+                )
+                member["stored_name"] = new_name
+                if new_name != old_name:
+                    stored_renames[old_name] = new_name
+
+    return {
+        "manifest": updated,
+        "removed_record": removed_record,
+        "removed_stored_names": removed_stored_names,
+        "stored_renames": stored_renames,
+    }
+
+
+def rewritten_member_path(name: str, target_number: int, manifest_update: dict | None) -> str | None:
+    normalized = name.replace("\\", "/")
+    if manifest_update is not None:
+        if normalized in manifest_update["removed_stored_names"]:
+            return None
+        renamed_stored = manifest_update["stored_renames"].get(normalized)
+        if renamed_stored is not None:
+            return renamed_stored
+    return renamed_path(normalized, target_number)
 
 
 class _HTMLToText(HTMLParser):
@@ -345,11 +441,31 @@ def human_size(value: int) -> str:
     return f"{value} B"
 
 
+def writable_zipinfo(source: zipfile.ZipInfo, new_name: str) -> zipfile.ZipInfo:
+    """复制安全的成员属性，不继承来源中可能过时的 ZIP64 标记。"""
+    target = zipfile.ZipInfo(new_name, date_time=source.date_time)
+    target.compress_type = source.compress_type
+    target.comment = source.comment
+    target.internal_attr = source.internal_attr
+    target.external_attr = source.external_attr
+    target.create_system = source.create_system
+    target.create_version = source.create_version
+    target.file_size = source.file_size
+    # ZipFile.open 会按真实 file_size 自动决定是否需要 ZIP64。普通文件保持
+    # extract_version=20，避免小型 CBZ 被错误标为“每个成员都需要 ZIP64”。
+    target.extract_version = 20
+    return target
+
+
 def analyze(source_path: Path, target_number: int) -> dict:
     if not source_path.is_file() or source_path.suffix.casefold() != ".cbz":
         raise ValueError("请选择有效的 .cbz 文件")
     with zipfile.ZipFile(source_path, "r") as source:
         infos = source.infolist()
+        manifest, manifest_name = read_merge_manifest(source)
+        manifest_update = (
+            update_merge_manifest(manifest, target_number) if manifest is not None else None
+        )
         groups: dict[int, set[str]] = {}
         for info in infos:
             group = numeric_top_group(info.filename)
@@ -389,7 +505,12 @@ def analyze(source_path: Path, target_number: int) -> dict:
         retained_names = []
         prospective_names: set[str] = set()
         for info in infos:
-            new_name = renamed_path(info.filename, target_number)
+            if manifest_name is not None and info.filename == manifest_name:
+                new_name = MANIFEST_PATH
+            else:
+                new_name = rewritten_member_path(
+                    info.filename, target_number, manifest_update
+                )
             if new_name is None:
                 continue
             key = new_name.casefold()
@@ -410,6 +531,8 @@ def analyze(source_path: Path, target_number: int) -> dict:
             "new_page_count": len(retained_names),
             "old_image_names": old_image_names,
             "retained_image_names": retained_names,
+            "manifest_name": manifest_name,
+            "manifest_update": manifest_update,
         }
 
 
@@ -439,10 +562,13 @@ def rewrite_cbz(source_path: Path, output_path: Path, target_number: int, analys
         archive_comment, preserved_unknown_comment = updated_zip_comment(
             source.comment, new_summary, new_page_count
         )
+        manifest_name = analysis.get("manifest_name")
+        manifest_update = analysis.get("manifest_update")
 
         total_to_copy = sum(
             info.filename not in comicinfo_names
-            and renamed_path(info.filename, target_number) is not None
+            and info.filename != manifest_name
+            and rewritten_member_path(info.filename, target_number, manifest_update) is not None
             for info in infos
         )
         copied = 0
@@ -452,17 +578,19 @@ def rewrite_cbz(source_path: Path, output_path: Path, target_number: int, analys
                 for info in infos:
                     if info.filename in comicinfo_names:
                         continue
-                    new_name = renamed_path(info.filename, target_number)
+                    if info.filename == manifest_name:
+                        continue
+                    new_name = rewritten_member_path(
+                        info.filename, target_number, manifest_update
+                    )
                     if new_name is None:
                         continue
-                    new_info = copy.copy(info)
-                    new_info.filename = new_name
-                    new_info.orig_filename = new_name
+                    new_info = writable_zipinfo(info, new_name)
                     if info.is_dir():
                         target.writestr(new_info, b"")
                     else:
                         with source.open(info, "r") as src, target.open(
-                            new_info, "w", force_zip64=True
+                            new_info, "w"
                         ) as dst:
                             shutil.copyfileobj(src, dst, length=1024 * 1024)
                     copied += 1
@@ -473,6 +601,16 @@ def rewrite_cbz(source_path: Path, output_path: Path, target_number: int, analys
                 xml_info.compress_type = zipfile.ZIP_DEFLATED
                 xml_info.external_attr = 0o600 << 16
                 target.writestr(xml_info, comicinfo_bytes)
+                if manifest_update is not None:
+                    manifest_info = zipfile.ZipInfo(MANIFEST_PATH)
+                    manifest_info.compress_type = zipfile.ZIP_DEFLATED
+                    manifest_info.external_attr = 0o600 << 16
+                    target.writestr(
+                        manifest_info,
+                        json.dumps(
+                            manifest_update["manifest"], ensure_ascii=False, indent=2
+                        ).encode("utf-8"),
+                    )
         except Exception:
             if output_path.exists():
                 output_path.unlink()
@@ -501,6 +639,24 @@ def rewrite_cbz(source_path: Path, output_path: Path, target_number: int, analys
             check_cbi = parse_comicbookinfo(check.comment)
             if check_cbi is None or check_cbi["ComicBookInfo/1.0"].get("pageCount") != analysis["new_page_count"]:
                 raise ValueError("Calibre 元数据页数校验失败")
+            if manifest_update is not None:
+                checked_manifest, checked_name = read_merge_manifest(check)
+                if checked_name != MANIFEST_PATH or checked_manifest is None:
+                    raise ValueError("可逆合并清单写回校验失败")
+                expected_sources = manifest_update["manifest"]["sources"]
+                if checked_manifest.get("sources") != expected_sources:
+                    raise ValueError("可逆合并清单内容校验失败")
+                available = set(names)
+                for source_record in expected_sources:
+                    for member in source_record.get("members", []):
+                        storage = member.get("storage")
+                        data_name = (
+                            member.get("merged_name") if storage == "mapped"
+                            else member.get("stored_name") if storage == "stored"
+                            else None
+                        )
+                        if data_name and data_name not in available:
+                            raise ValueError(f"可逆还原数据缺失：{data_name}")
     except Exception:
         if output_path.exists():
             output_path.unlink()
@@ -513,6 +669,11 @@ def rewrite_cbz(source_path: Path, output_path: Path, target_number: int, analys
         "reindexed_page_meta": reindexed_page_meta,
         "had_comicinfo": had_comicinfo,
         "preserved_unknown_comment": preserved_unknown_comment,
+        "manifest_updated": manifest_update is not None,
+        "removed_manifest_title": (
+            manifest_update["removed_record"].get("display_title", "")
+            if manifest_update is not None else ""
+        ),
     }
 
 
@@ -558,6 +719,12 @@ def main() -> int:
     print(f"作品名：{details['title'] or '简介中未识别到名称'}")
     print(f"将删除：{len(details['target_images'])} 张图片，{details['target_file_count']} 个文件")
     print(f"总页数：{details['old_page_count']} -> {details['new_page_count']}")
+    if details["manifest_update"] is not None:
+        removed_source = details["manifest_update"]["removed_record"]
+        print(
+            "可逆清单：将删除来源记录 "
+            f"{removed_source.get('original_name') or removed_source.get('display_title') or details['target_label']}"
+        )
     print(f"新文件：{output_path}")
     print(f"原文件大小：{human_size(source_size)}")
     print(f"可用空间：{human_size(free_space)}")
@@ -569,7 +736,7 @@ def main() -> int:
         )
         return 1
 
-    confirmation = input("\n确认删除上述第一项，请输入 DELETE：").strip()
+    confirmation = input(f"\n确认删除上述第 {target_number} 项，请输入 DELETE：").strip()
     if confirmation != "DELETE":
         print("已取消，未修改任何文件。")
         return 1
@@ -587,7 +754,15 @@ def main() -> int:
     print(f"输出：{output_path}")
     print(f"已删除：{result['removed_title'] or details['target_label']}")
     print(f"页数：{details['old_page_count']} -> {details['new_page_count']}")
-    print(f"简介清单：{'已删除第一项并重新编号' if result['summary_updated'] else '未识别标准清单，仅更新页数'}")
+    print(f"简介清单：{'已删除指定项并重新编号' if result['summary_updated'] else '未识别标准清单，仅更新页数'}")
+    print(
+        "可逆清单："
+        + (
+            "已删除对应来源记录并重排还原路径"
+            if result["manifest_updated"]
+            else "原文件不含新版可逆合并清单"
+        )
+    )
     print(
         f"页面索引：删除 {result['removed_page_meta']} 条，"
         f"重排 {result['reindexed_page_meta']} 条"

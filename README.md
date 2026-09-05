@@ -1,10 +1,38 @@
-# 我的 Agent Skills
+# Agent Skills
 
-这个仓库用于保存个人 AI 工作流、脚本、参考资料和测试记录。
+这个公开仓库收录可在 Codex 中使用的 Agent Skills、配套脚本、参考资料和测试记录。当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
 日常使用方法请查看：[CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)。
 
 Skill 创建、备份、安装和同步方法请查看：[Skill 仓库管理使用说明](Skill仓库管理使用说明.md)。
+
+## 安装前准备
+
+- 安装 [Git](https://git-scm.com/)、PowerShell 7 和 64 位 Python 3.11 或更高版本。
+- 确认 Codex 用户 Skill 目录：Windows 默认为 `%USERPROFILE%\.codex\skills`。
+- `cbz-workflow` 的基础 CBZ 功能只使用 Python 标准库；JMComic 下载功能额外需要 `jmcomic`、`Pillow` 和 `zhconv`。
+- 运行前先把 Skill 中的本机路径配置改成自己的目录，并使用小型副本测试。
+
+## 安装
+
+```powershell
+git clone https://github.com/konghenfuxue-cpu/ai-skills.git
+Copy-Item -Recurse -Force '.\ai-skills\skills\cbz-workflow' "$env:USERPROFILE\.codex\skills\cbz-workflow"
+Copy-Item -Recurse -Force '.\ai-skills\skills\skill-repository-manager' "$env:USERPROFILE\.codex\skills\skill-repository-manager"
+```
+
+安装后重启 Codex。如果只需要某一个 Skill，只复制对应子目录即可。安装 JMComic 可选依赖：
+
+```powershell
+python -m pip install jmcomic Pillow zhconv
+```
+
+## 使用前提醒
+
+- 这些脚本会处理本地文件；覆盖、删除或原地更新前请仔细确认目标。
+- 仓库不包含漫画、电子书、JMComic 配置、Cookie、Token 或 API Key。
+- 使用 JMComic 功能时，请自行确认当地法律、站点条款和内容授权。
+- 部分功能仍处于“测试中”，详见下方状态表和各 Skill 的 `evals/`。
 
 ## Skill 目录
 

@@ -24,8 +24,8 @@
 
 ```powershell
 $env:PYTHONUTF8='1'
-& 'C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe' `
-  'C:\Users\lv\.codex\skills\.system\skill-creator\scripts\quick_validate.py' `
+& python `
+  "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" `
   'D:\ai-skill\skill\skills\<skill-name>'
 ```
 
@@ -56,7 +56,7 @@ git -C 'D:\ai-skill\skill' push origin main
 个人 Skill 安装在：
 
 ```text
-C:\Users\lv\.codex\skills\<skill-name>
+%USERPROFILE%\.codex\skills\<skill-name>
 ```
 
 可通过 `$skill-installer` 从私有 GitHub 仓库安装。安装完成后运行标准验证，并检查随附脚本是否能加载依赖。

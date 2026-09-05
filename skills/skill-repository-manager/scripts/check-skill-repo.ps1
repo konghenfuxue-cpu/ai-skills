@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
-    [string]$Repository = 'D:\ai-skill\skill',
-    [string]$CodexSkills = 'C:\Users\lv\.codex\skills'
+    [string]$Repository = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path,
+    [string]$CodexSkills = (Join-Path $env:USERPROFILE '.codex\skills')
 )
 
 $ErrorActionPreference = 'Stop'

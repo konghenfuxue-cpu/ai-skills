@@ -1,6 +1,6 @@
 ---
 name: skill-repository-manager
-description: 管理用户的个人 Agent Skills 源仓库，包括创建或更新 Skill、检查目录与安全性、记录测试、提交并推送 GitHub 私有仓库，以及同步 Codex 安装副本。当用户询问 Skill 放在哪里、如何备份、上传 GitHub、安装、更新、同步或恢复时使用。不用于执行 CBZ、EPUB 等业务 Skill 本身的任务。
+description: 管理用户的个人 Agent Skills 源仓库，包括创建或更新 Skill、检查目录与安全性、记录测试、提交并推送 GitHub 仓库，以及同步 Codex 安装副本。当用户询问 Skill 放在哪里、如何备份、上传 GitHub、安装、更新、同步或恢复时使用。不用于执行 CBZ、EPUB 等业务 Skill 本身的任务。
 ---
 
 # 个人 Skill 仓库管理
@@ -12,8 +12,8 @@ description: 管理用户的个人 Agent Skills 源仓库，包括创建或更�
 ## 核心原则
 
 1. `D:\ai-skill\skill` 是唯一源仓库；正式修改只在这里完成。
-2. `C:\Users\lv\.codex\skills` 中的个人 Skill 是安装副本，不在其中手工维护。
-3. GitHub 私有仓库用于版本历史与异地备份，不存放真实漫画、电子书、密钥、Cookie 或大文件。
+2. `%USERPROFILE%\.codex\skills` 中的个人 Skill 是安装副本，不在其中手工维护。
+3. GitHub 公开仓库用于版本历史、备份与分享，不存放真实漫画、电子书、密钥、Cookie、账号凭据或大文件。
 4. 每个 Skill 使用独立文件夹，入口必须准确命名为 `SKILL.md`。
 5. 新建或重大修改后先验证，再提交、推送和安装。
 6. 不删除旧脚本；先比较功能，无法确定时移入 `archive/旧版脚本/`。
@@ -47,7 +47,7 @@ description: 管理用户的个人 Agent Skills 源仓库，包括创建或更�
 2. `.env`、`*.key`、Cookie、令牌和账号凭据没有进入暂存区。
 3. `SKILL.md` 中的本地路径是用户明确允许保存的配置。
 4. 脚本没有来源不明的下载执行命令。
-5. GitHub 远程仍指向用户的私有 `ai-skills` 仓库。
+5. GitHub 远程仍指向预期的 `ai-skills` 仓库。
 
 ## 完成报告
 
