@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime
@@ -11,7 +12,7 @@ from pathlib import Path
 
 
 REPORT_SUFFIX = "分卷报告.txt"
-DEFAULT_SCAN_ROOT = Path(r"D:\JMComic\download\CBZ")
+ENV_SCAN_ROOT = "JMCOMIC_DOWNLOAD_ROOT"
 
 
 @dataclass
@@ -133,9 +134,13 @@ def choose_root() -> Path:
         raw = " ".join(sys.argv[1:]).strip().strip('"')
         return Path(raw).expanduser()
 
-    default = DEFAULT_SCAN_ROOT
+    configured = os.environ.get(ENV_SCAN_ROOT, "").strip()
+    default = Path(configured).expanduser() / "CBZ" if configured else Path.cwd()
     print("请输入要扫描的文件夹路径。")
-    print(f"直接按回车：扫描默认文件夹\n默认路径：{default}")
+    print(
+        f"直接按回车：扫描默认文件夹\n默认路径：{default}\n"
+        f"可用环境变量 {ENV_SCAN_ROOT} 设置 JMComic 下载根目录。"
+    )
     raw = input("文件夹路径：").strip().strip('"')
     return Path(raw).expanduser() if raw else default
 

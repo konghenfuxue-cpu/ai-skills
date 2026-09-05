@@ -3,17 +3,25 @@ JMComic 分卷报告完整性检测工具
 
 一、最简单的使用方法
 
-1. 把整个“JM分卷报告完整性检测工具”文件夹放进：
-   D:\JMComic\download
-2. 双击“双击检测.cmd”。
-3. 在询问路径时直接按回车。
+1. 双击“双击检测.cmd”。
+2. 输入或粘贴包含“分卷报告.txt”的目标目录。
+3. 也可以把目标文件夹拖到“双击检测.cmd”图标上。
 
 工具会递归扫描所有子文件夹，不需要把报告集中到一起。
 
-二、扫描其他文件夹
+二、设置默认文件夹
 
-方法 A：双击“双击检测.cmd”，输入或粘贴目标文件夹路径。
-方法 B：把目标文件夹拖到“双击检测.cmd”图标上。
+如果设置了环境变量 JMCOMIC_DOWNLOAD_ROOT，直接按回车时默认扫描：
+
+%JMCOMIC_DOWNLOAD_ROOT%\CBZ
+
+PowerShell 临时设置示例：
+
+$env:JMCOMIC_DOWNLOAD_ROOT = 'D:\你的JMComic下载目录'
+
+未设置时，默认扫描当前工作目录。命令行也可直接指定路径：
+
+python check_incomplete_reports.py "D:\你的报告目录"
 
 三、检测依据
 

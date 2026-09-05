@@ -3,7 +3,7 @@
 ## 新建 Skill
 
 1. 明确 Skill 的单一职责、触发请求和不应触发的边界。
-2. 在 `D:\ai-skill\skill\skills\<skill-name>` 创建 `SKILL.md`。
+2. 在当前仓库的 `skills/<skill-name>` 创建 `SKILL.md`。
 3. 只按实际需要添加 `scripts/`、`references/`、`assets/` 或 `evals/`。
 4. 检查 YAML、相对链接、UTF-8 和目录命名。
 5. 使用小型隔离样本测试，不直接使用唯一真实文件。
@@ -24,9 +24,9 @@
 
 ```powershell
 $env:PYTHONUTF8='1'
-& 'C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe' `
-  'C:\Users\lv\.codex\skills\.system\skill-creator\scripts\quick_validate.py' `
-  'D:\ai-skill\skill\skills\<skill-name>'
+$repo = (Get-Location).Path
+python (Join-Path $env:USERPROFILE '.codex\skills\.system\skill-creator\scripts\quick_validate.py') `
+  (Join-Path $repo 'skills\<skill-name>')
 ```
 
 验证器通过不代表实际行为正确；有脚本时还需要隔离测试。
@@ -36,24 +36,25 @@ $env:PYTHONUTF8='1'
 先执行只读检查：
 
 ```powershell
-& 'D:\ai-skill\skill\skills\skill-repository-manager\scripts\check-skill-repo.ps1'
-git -C 'D:\ai-skill\skill' diff --check
+$repo = (Get-Location).Path
+& (Join-Path $repo 'skills\skill-repository-manager\scripts\check-skill-repo.ps1')
+git -C $repo diff --check
 ```
 
 该检查会同时列出 Git 状态、远程地址、每个源 Skill 的入口文件，以及是否存在对应的 Codex 安装副本。需要查看更细的暂存内容时，再执行：
 
 ```powershell
-git -C 'D:\ai-skill\skill' status --short
-git -C 'D:\ai-skill\skill' diff --cached --stat
-git -C 'D:\ai-skill\skill' remote -v
+git -C $repo status --short
+git -C $repo diff --cached --stat
+git -C $repo remote -v
 ```
 
 确认没有敏感或大文件后：
 
 ```powershell
-git -C 'D:\ai-skill\skill' add <明确的文件>
-git -C 'D:\ai-skill\skill' commit -m '简短说明'
-git -C 'D:\ai-skill\skill' push origin main
+git -C $repo add <明确的文件>
+git -C $repo commit -m '简短说明'
+git -C $repo push origin main
 ```
 
 不使用笼统提交来掩盖未检查文件。GitHub Desktop 中对应流程是：检查 Changes → 填写 Summary → Commit to main → Push origin。
@@ -63,10 +64,10 @@ git -C 'D:\ai-skill\skill' push origin main
 个人 Skill 安装在：
 
 ```text
-C:\Users\lv\.codex\skills\<skill-name>
+%USERPROFILE%\.codex\skills\<skill-name>
 ```
 
-可通过 `$skill-installer` 从私有 GitHub 仓库安装。安装完成后运行标准验证，并检查随附脚本是否能加载依赖。
+可通过 `$skill-installer` 从公开 GitHub 仓库安装。安装完成后运行标准验证，并检查随附脚本是否能加载依赖。
 
 如果目标目录已存在，不直接覆盖。先比较源仓库、GitHub 和安装副本，确认需要更新后再采用可恢复的替换方式。
 
@@ -75,7 +76,7 @@ C:\Users\lv\.codex\skills\<skill-name>
 推荐顺序：
 
 ```text
-Obsidian 源仓库修改
+Git 源仓库修改
 → 测试与验证
 → Git 提交
 → Push origin

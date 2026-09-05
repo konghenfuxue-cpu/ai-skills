@@ -4,6 +4,15 @@ title JMComic Download and CBZ Builder
 
 cd /d "%~dp0"
 
+set "DOWNLOAD_ROOT=%JMCOMIC_DOWNLOAD_ROOT%"
+if not defined DOWNLOAD_ROOT set "DOWNLOAD_ROOT=%USERPROFILE%\Downloads\JMComic"
+echo Default JMComic download root: %DOWNLOAD_ROOT%
+set "CUSTOM_ROOT="
+set /p "CUSTOM_ROOT=Press Enter to use it, or enter another path: "
+if defined CUSTOM_ROOT set "DOWNLOAD_ROOT=%CUSTOM_ROOT%"
+
+if not exist "%~dp0option.yml" goto NO_OPTION
+
 where python.exe >nul 2>nul
 if errorlevel 1 goto NO_PYTHON
 
@@ -42,7 +51,7 @@ for %%Z in ("%~dp0selected_id.txt") do if %%~zZ==0 goto ASK_ID
 goto SELECT_SIZE
 
 :RESUME_SCAN
-python.exe "%~dp0resume_scan.py" "D:\JMComic\download" "%~dp0option.yml" "%~dp0pack_cbz.py"
+python.exe "%~dp0resume_scan.py" "%DOWNLOAD_ROOT%" "%~dp0option.yml" "%~dp0pack_cbz.py"
 if errorlevel 1 goto PACK_FAILED
 goto END
 
@@ -77,7 +86,7 @@ for /f "usebackq tokens=* delims=" %%I in ("%~dp0selected_id.txt") do call :PROC
 if defined FAILED goto MULTI_FAILED
 
 echo.
-echo Finished. CBZ output: D:\JMComic\download\CBZ
+echo Finished. CBZ output: %DOWNLOAD_ROOT%\CBZ
 goto END
 
 :PROCESS_ONE
@@ -94,7 +103,7 @@ jmcomic.exe %JM_ID% --option "%~dp0option.yml"
 set "DOWNLOAD_RC=%ERRORLEVEL%"
 if not "%DOWNLOAD_RC%"=="0" echo [WARNING] Download returned error; creating the compact integrity report now.
 echo Creating CBZ for JM%JM_ID%...
-python.exe "%~dp0pack_cbz.py" %JM_ID% "D:\JMComic\download" 25 %MAX_WIDTH% 85 "%~dp0option.yml" %DOWNLOAD_RC%
+python.exe "%~dp0pack_cbz.py" %JM_ID% "%DOWNLOAD_ROOT%" 25 %MAX_WIDTH% 85 "%~dp0option.yml" %DOWNLOAD_RC%
 if errorlevel 1 (
     echo [WARNING] JM%JM_ID% is incomplete or CBZ creation failed. Check its integrity report.
     set "FAILED=1"
@@ -113,6 +122,11 @@ goto END
 
 :INSTALL_FAILED
 echo [ERROR] Failed to install required Python packages.
+goto END
+
+:NO_OPTION
+echo [ERROR] option.yml was not found next to this script.
+echo Copy your JMComic option file here before using network download features.
 goto END
 
 :BAD_ID

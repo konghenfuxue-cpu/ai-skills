@@ -1,44 +1,26 @@
 # 仓库与环境配置
 
-## 唯一源仓库
+## 公开仓库
 
-- Obsidian/Git 本地仓库：`D:\ai-skill\skill`
-- Skill 源目录：`D:\ai-skill\skill\skills`
-- 旧版归档：`D:\ai-skill\skill\archive\旧版脚本`
-- 测试记录：每个 Skill 内的 `evals/`
-
-所有正式内容修改都回到源仓库完成。
-
-## GitHub
-
-- 仓库名称：`ai-skills`
-- 所有者：`konghenfuxue-cpu`
-- 远程地址：`https://github.com/konghenfuxue-cpu/ai-skills.git`
+- GitHub：`https://github.com/konghenfuxue-cpu/ai-skills`
 - 默认分支：`main`
 - 可见性：Public
-- Git 远程名：`origin`
+- Skill 源目录：仓库根目录下的 `skills/`
+- 旧版归档：仓库根目录下的 `archive/旧版脚本/`
+- 测试记录：每个 Skill 内的 `evals/`
 
-GitHub Desktop 已安装在：
-
-```text
-C:\Users\lv\AppData\Local\GitHubDesktop\GitHubDesktop.exe
-```
+所有正式内容修改都在当前 Git 仓库中完成。具体克隆路径由使用者自行选择。
 
 ## Codex 安装位置
 
-- 用户 Skill 根目录：`C:\Users\lv\.codex\skills`
-- `cbz-workflow` 安装副本：`C:\Users\lv\.codex\skills\cbz-workflow`
-- 本 Skill 安装后位置：`C:\Users\lv\.codex\skills\skill-repository-manager`
+- Windows 默认用户 Skill 根目录：`%USERPROFILE%\.codex\skills`
+- 单个 Skill 安装位置：`%USERPROFILE%\.codex\skills\<skill-name>`
 
 安装副本只供 Codex 加载，不作为正式编辑位置。
 
-## Python 与 Git
+## 本地覆盖
 
-- Python：3.11.9 64 位
-- Python 路径：`C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe`
-- Git：已安装
-- Git 用户名：`黑背雪`
-- Git 邮箱：`konghenfuxue@gmail.com`
+仓库根目录的 `LOCAL.md` 已被 Git 忽略，可用于记录维护者自己的克隆路径、Python 路径和安装目录。公开文件不得包含个人路径、邮箱或凭据。
 
 ## 当前已知 Skill
 

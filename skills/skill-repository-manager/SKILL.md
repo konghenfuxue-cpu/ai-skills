@@ -5,14 +5,14 @@ description: 管理用户的个人 Agent Skills 源仓库，包括创建或更�
 
 # 个人 Skill 仓库管理
 
-维护用户唯一的 Agent Skills 源仓库，并在 Obsidian、GitHub 和 Codex 安装目录之间执行可验证的发布流程。
+维护 Agent Skills 源仓库，并在本地工作区、GitHub 和 Codex 安装目录之间执行可验证的发布流程。
 
 开始任务时读取[仓库与环境配置](references/repository-settings.md)。需要创建、更新、提交、安装或恢复时，再读取[维护流程](references/maintenance-workflow.md)。
 
 ## 核心原则
 
-1. `D:\ai-skill\skill` 是唯一源仓库；正式修改只在这里完成。
-2. `C:\Users\lv\.codex\skills` 中的个人 Skill 是安装副本，不在其中手工维护。
+1. 当前 Git 仓库是唯一源仓库；正式修改只在这里完成。
+2. `%USERPROFILE%\.codex\skills` 中的个人 Skill 是安装副本，不在其中手工维护。
 3. GitHub 公开仓库用于版本历史、备份与分享，不存放真实漫画、电子书、密钥、Cookie、账号凭据或大文件。
 4. 每个 Skill 使用独立文件夹，入口必须准确命名为 `SKILL.md`。
 5. 新建或重大修改后先验证，再提交、推送和安装。
@@ -23,10 +23,10 @@ description: 管理用户的个人 Agent Skills 源仓库，包括创建或更�
 
 - “Skill 放在哪里/仓库是什么”：读取并回答 `repository-settings.md`。
 - “检查仓库/现在是否同步”：运行 `scripts/check-skill-repo.ps1`，报告本地状态、远程地址和安装情况。
-- “创建新 Skill”：使用 `$skill-creator`，在源仓库 `skills/<skill-name>/` 创建并验证。
+- “创建新 Skill”：使用 `$skill-creator`，在源仓库的 `skills/<skill-name>/` 创建并验证。
 - “更新现有 Skill”：只修改源仓库，保留旧功能并更新测试记录。
 - “上传 GitHub”：先检查 `.gitignore` 和待提交文件，再提交并推送 `main`。
-- “安装到 Codex”：从私有 GitHub 仓库或已验证源目录安装到用户 Skill 目录。
+- “安装到 Codex”：从公开 GitHub 仓库或已验证源目录安装到用户 Skill 目录。
 - “同步最新版”：确认源仓库已提交和推送，再更新安装副本并重新验证。
 - “恢复旧版本”：先显示目标提交和受影响文件，不直接执行破坏性恢复。
 

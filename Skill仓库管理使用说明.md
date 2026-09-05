@@ -2,14 +2,14 @@
 
 ## 1. 这是什么
 
-`skill-repository-manager` 是你的个人 Agent Skills 管理 Skill。
+`skill-repository-manager` 是用于维护 Agent Skills 仓库的管理 Skill。
 
 它不负责合并 CBZ、修复 EPUB 等具体业务，而是管理这些业务 Skill 的完整生命周期：
 
 ```text
 创建或修改
 → 测试与验证
-→ 保存到 Obsidian 源仓库
+→ 保存到 Git 源仓库
 → 提交并推送 GitHub
 → 安装或更新到 Codex
 → 检查同步状态
@@ -20,17 +20,17 @@
 
 ## 2. 三个位置的分工
 
-### Obsidian：唯一源文件
+### Git 仓库：唯一源文件
 
 ```text
-D:\ai-skill\skill
+<你的仓库目录>
 ```
 
 用途：
 
 - 正式编辑 Skill；
 - 保存脚本、参考资料和测试记录；
-- 用 Obsidian 浏览和检索；
+- 可用任意编辑器或 Obsidian 浏览和检索；
 - 作为本地 Git 仓库。
 
 所有正式修改都从这里开始。
@@ -54,12 +54,12 @@ https://github.com/konghenfuxue-cpu/ai-skills
 ### Codex：安装与执行副本
 
 ```text
-C:\Users\lv\.codex\skills
+%USERPROFILE%\.codex\skills
 ```
 
 用途：让 Codex 发现和调用个人 Skill。
 
-这里的文件是安装副本，不是正式编辑位置。不要在 Codex 安装目录和 Obsidian 源仓库中分别维护两个版本。
+这里的文件是安装副本，不是正式编辑位置。不要在 Codex 安装目录和 Git 源仓库中分别维护两个版本。
 
 ## 3. 如何调用
 
@@ -110,7 +110,7 @@ Codex 可以根据请求自动选择这个 Skill。也可以明确写：
 ## 4. 源仓库结构
 
 ```text
-D:\ai-skill\skill\
+<你的仓库目录>\
 ├── README.md
 ├── .gitignore
 ├── skills\
@@ -138,7 +138,7 @@ skill-name\
 
 1. 明确 Skill 的单一职责。
 2. 列出应该触发和不应该触发的请求。
-3. 在 `D:\ai-skill\skill\skills\<skill-name>` 创建文件夹。
+3. 在当前仓库的 `skills/<skill-name>` 创建文件夹。
 4. 创建 `SKILL.md`，填写 YAML `name` 和 `description`。
 5. 只在确有需要时添加 `scripts/`、`references/`、`assets/` 或 `evals/`。
 6. 运行标准格式验证。
@@ -161,7 +161,7 @@ skill-repository-manager
 1. 读取完整 `SKILL.md` 和相关参考资料。
 2. 阅读脚本与使用说明，盘点现有功能。
 3. 明确本次新增或修复内容。
-4. 只修改 Obsidian 源仓库。
+4. 只修改 Git 源仓库。
 5. 保留与新要求不冲突的旧功能。
 6. 做语法、格式和行为测试。
 7. 更新 `evals/` 中的测试记录。
@@ -170,25 +170,24 @@ skill-repository-manager
 如果出现多个旧脚本，不要直接删除。先比较功能，无法确定时保存到：
 
 ```text
-D:\ai-skill\skill\archive\旧版脚本
+<你的仓库目录>\archive\旧版脚本
 ```
 
 ## 7. 标准验证
 
-当前 Python：
+推荐 Python：
 
 ```text
-Python 3.11.9 64 位
-C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe
+64 位 Python 3.11 或更高版本
 ```
 
 中文 Windows 上验证 Skill：
 
 ```powershell
 $env:PYTHONUTF8='1'
-& 'C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe' `
-  'C:\Users\lv\.codex\skills\.system\skill-creator\scripts\quick_validate.py' `
-  'D:\ai-skill\skill\skills\skill-name'
+$repo = (Get-Location).Path
+python (Join-Path $env:USERPROFILE '.codex\skills\.system\skill-creator\scripts\quick_validate.py') `
+  (Join-Path $repo 'skills\skill-name')
 ```
 
 出现以下内容代表基础结构通过：
@@ -204,13 +203,14 @@ Skill is valid!
 本 Skill 附带只读脚本：
 
 ```text
-D:\ai-skill\skill\skills\skill-repository-manager\scripts\check-skill-repo.ps1
+<你的仓库目录>\skills\skill-repository-manager\scripts\check-skill-repo.ps1
 ```
 
 运行：
 
 ```powershell
-& 'D:\ai-skill\skill\skills\skill-repository-manager\scripts\check-skill-repo.ps1'
+$repo = (Get-Location).Path
+& (Join-Path $repo 'skills\skill-repository-manager\scripts\check-skill-repo.ps1')
 ```
 
 它会显示：
@@ -248,17 +248,17 @@ D:\ai-skill\skill\skills\skill-repository-manager\scripts\check-skill-repo.ps1
 先检查：
 
 ```powershell
-git -C 'D:\ai-skill\skill' status --short
-git -C 'D:\ai-skill\skill' diff --check
-git -C 'D:\ai-skill\skill' remote -v
+git -C $repo status --short
+git -C $repo diff --check
+git -C $repo remote -v
 ```
 
 确认后再提交明确文件：
 
 ```powershell
-git -C 'D:\ai-skill\skill' add <文件或目录>
-git -C 'D:\ai-skill\skill' commit -m '简短修改说明'
-git -C 'D:\ai-skill\skill' push origin main
+git -C $repo add <文件或目录>
+git -C $repo commit -m '简短修改说明'
+git -C $repo push origin main
 ```
 
 ## 10. 安装或更新到 Codex
@@ -266,13 +266,13 @@ git -C 'D:\ai-skill\skill' push origin main
 安装位置：
 
 ```text
-C:\Users\lv\.codex\skills\<skill-name>
+%USERPROFILE%\.codex\skills\<skill-name>
 ```
 
 推荐顺序：
 
 ```text
-Obsidian 修改
+Git 源仓库修改
 → 测试
 → Git 提交
 → Push origin
@@ -298,7 +298,7 @@ Obsidian 修改
 - [ ] `.gitignore` 仍然生效；
 - [ ] GitHub 远程仍指向预期的 `ai-skills`；
 - [ ] 新脚本没有来源不明的下载执行命令；
-- [ ] 本地路径和账号信息属于允许保存的配置；
+- [ ] 公开文件不包含个人路径、邮箱、账号信息或凭据；
 - [ ] 删除、覆盖和恢复操作已经确认准确目标。
 
 ## 12. 恢复旧版本
@@ -329,7 +329,7 @@ git push --force
 
 | 项目 | 状态 |
 |---|---|
-| Obsidian 源仓库 | 正常 |
+| Git 源仓库 | 正常 |
 | GitHub 公开仓库 | 已连接 |
 | 默认分支 | `main` |
 | `cbz-workflow` | 已保存、已上传、已安装 |
@@ -340,4 +340,4 @@ git push --force
 
 只记住一条也可以：
 
-> 正式修改永远回到 `D:\ai-skill\skill`，测试通过后上传 GitHub，最后再更新 `C:\Users\lv\.codex\skills` 中的安装副本。
+> 正式修改永远回到 Git 源仓库，测试通过后上传 GitHub，最后再更新 `%USERPROFILE%\.codex\skills` 中的安装副本。

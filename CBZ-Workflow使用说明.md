@@ -19,12 +19,12 @@
 
 | 用途 | 位置 |
 |---|---|
-| Obsidian 源仓库 | `D:\ai-skill\skill` |
-| Skill 源文件 | `D:\ai-skill\skill\skills\cbz-workflow` |
-| Codex 安装副本 | `C:\Users\lv\.codex\skills\cbz-workflow` |
+| Git 本地仓库 | `<你的仓库目录>` |
+| Skill 源文件 | `<你的仓库目录>\skills\cbz-workflow` |
+| Codex 安装副本 | `%USERPROFILE%\.codex\skills\cbz-workflow` |
 | GitHub 公开仓库 | `https://github.com/konghenfuxue-cpu/ai-skills` |
 
-重要原则：正式修改始终在 Obsidian 源仓库完成，不要直接编辑 Codex 安装副本。
+重要原则：正式修改始终在 Git 源仓库完成，不要直接编辑 Codex 安装副本。本机实际路径可写入被 Git 忽略的 `LOCAL.md`。
 
 ## 3. 如何调用
 
@@ -133,7 +133,7 @@ Codex 可以根据请求内容自动选择这个 Skill。为了明确指定，�
 
 ### 修改源文件
 
-1. 在 Obsidian 中打开 `D:\ai-skill\skill`。
+1. 在编辑器或 Obsidian 中打开你的 Git 仓库目录。
 2. 修改 `skills/cbz-workflow` 中的说明或脚本。
 3. 使用小型副本测试修改结果。
 4. 在 `evals/` 中记录重要测试。
@@ -154,8 +154,8 @@ GitHub 中的源仓库更新后，需要重新同步或安装 `cbz-workflow`，C
 不要在以下两个位置分别手工修改同一个文件：
 
 ```text
-D:\ai-skill\skill\skills\cbz-workflow
-C:\Users\lv\.codex\skills\cbz-workflow
+<你的仓库目录>\skills\cbz-workflow
+%USERPROFILE%\.codex\skills\cbz-workflow
 ```
 
 前者是唯一源文件位置；后者只是 Codex 加载用的安装副本。
@@ -165,8 +165,7 @@ C:\Users\lv\.codex\skills\cbz-workflow
 当前已确认环境：
 
 ```text
-Python 3.11.9 64 位
-C:\Users\lv\AppData\Local\Programs\Python\Python311\python.exe
+64 位 Python 3.11 或更高版本
 ```
 
 JMComic 本地打包相关依赖已经确认：
@@ -199,7 +198,7 @@ python -c "import sys; print(sys.executable); print(sys.maxsize > 2**32)"
 若仍未出现，重新启动 Codex，检查下面的文件是否存在：
 
 ```text
-C:\Users\lv\.codex\skills\cbz-workflow\SKILL.md
+%USERPROFILE%\.codex\skills\cbz-workflow\SKILL.md
 ```
 
 ### CMD 提示找不到 Python
