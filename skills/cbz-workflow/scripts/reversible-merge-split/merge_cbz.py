@@ -6,6 +6,7 @@ import html
 import json
 import os
 import re
+import shutil
 import sys
 import time
 import traceback
@@ -214,6 +215,17 @@ def validate_cbz(path: Path, log: ProgressLog):
                 log.write(f"校验进度：{index}/{total}（{index / total:.0%}）")
 
 
+def copy_member_streaming(out: ZipFile, target_name: str, source: ZipFile, info) -> None:
+    """以固定缓冲区复制一个成员，避免大图一次读入内存。"""
+    # ZipFile 无法预先推断用字符串名称创建的超大成员尺寸；大成员明确
+    # 请求 ZIP64，小成员保持普通 ZIP 成员以兼容更多漫画阅读器。
+    force_zip64 = info.file_size >= (1 << 31) - 1
+    with source.open(info, "r") as input_file, out.open(
+        target_name, "w", force_zip64=force_zip64
+    ) as output_file:
+        shutil.copyfileobj(input_file, output_file, length=1024 * 1024)
+
+
 def merge_cbz(inputs: list[Path], output: Path, title: str, log: ProgressLog):
     inputs = sorted(inputs, key=natural_key)
     page_total = 0
@@ -239,7 +251,7 @@ def merge_cbz(inputs: list[Path], output: Path, title: str, log: ProgressLog):
             if cover:
                 first_cover_name = "000-cover" + Path(cover.filename).suffix.lower()
                 first_cover_info = cover.filename
-                out.writestr(first_cover_name, first.read(cover))
+                copy_member_streaming(out, first_cover_name, first, cover)
                 log.write(f"已写入封面：{inputs[0].name} -> {cover.filename}")
         for position, (source, display_title) in enumerate(zip(inputs, source_titles), 1):
             chapter = chapter_number(source)
@@ -264,7 +276,7 @@ def merge_cbz(inputs: list[Path], output: Path, title: str, log: ProgressLog):
                         page = image_ids[id(info)]
                         suffix = Path(info.filename).suffix.lower()
                         merged_name = f"{folder}/{page:04d}{suffix}"
-                        out.writestr(merged_name, src.read(info))
+                        copy_member_streaming(out, merged_name, src, info)
                         record["storage"] = "mapped"
                         record["merged_name"] = merged_name
                         page_total += 1
@@ -277,7 +289,7 @@ def merge_cbz(inputs: list[Path], output: Path, title: str, log: ProgressLog):
                     else:
                         # 其他封面、ComicInfo.xml 和小型附加文件放到阅读器忽略的还原区。
                         stored_name = f"{RESTORE_ROOT}/{position:03d}/{member_index:06d}.bin"
-                        out.writestr(stored_name, src.read(info))
+                        copy_member_streaming(out, stored_name, src, info)
                         record["storage"] = "stored"
                         record["stored_name"] = stored_name
                     source_record["members"].append(record)

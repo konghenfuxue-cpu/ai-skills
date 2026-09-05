@@ -71,7 +71,7 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 - 这些脚本会处理本地文件；覆盖、删除或原地更新前请仔细确认目标。
 - 仓库不包含漫画、电子书、JMComic 配置、Cookie、Token 或 API Key。
 - 使用 JMComic 功能时，请自行确认当地法律、站点条款和内容授权。
-- `cbz-workflow` 仍处于“测试中”，详见下方状态表和各 Skill 的 `evals/`。
+- `cbz-workflow` 的本地核心流程已稳定；JMComic 网络下载属于外部依赖，仍需单独确认，详见各 Skill 的 `evals/`。
 
 ## 维护者本地配置
 
@@ -85,7 +85,7 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 
 | Skill | 状态 | 用途 | 最近测试 |
 |---|---|---|---|
-| cbz-workflow | 测试中 | CBZ 合并、拆分、检测和元数据 | 2026-09-05 可逆删除边界与真实 CBZ 兼容修复通过 |
+| cbz-workflow | 稳定（本地核心） | CBZ 合并、拆分、检测和元数据 | 2026-09-05 300 页与超过 2 GiB ZIP64 流式验证通过 |
 | skill-repository-manager | 稳定 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-05 多次真实提交、推送与安装同步通过 |
 | epub-repair | 稳定 | EPUB 包装、目录和结构检查与安全修复 | 2026-09-05 真实 EPUB 检查与临时副本修复通过 |
 | calibre-workflow | 稳定 | Calibre 书库只读审计、格式检查和重复候选识别 | 2026-09-05 真实书库只读审计通过 |

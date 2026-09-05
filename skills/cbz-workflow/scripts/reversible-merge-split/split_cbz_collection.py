@@ -82,6 +82,21 @@ def zipinfo_from_record(record: dict) -> zipfile.ZipInfo:
     return info
 
 
+def copy_member_streaming(
+    target: zipfile.ZipFile,
+    output_info: zipfile.ZipInfo,
+    source: zipfile.ZipFile,
+    data_name: str,
+) -> None:
+    """以固定缓冲区还原成员，避免超大图片一次载入内存。"""
+    source_info = source.getinfo(data_name)
+    force_zip64 = source_info.file_size >= (1 << 31) - 1
+    with source.open(source_info, "r") as input_file, target.open(
+        output_info, "w", force_zip64=force_zip64
+    ) as output_file:
+        shutil.copyfileobj(input_file, output_file, length=1024 * 1024)
+
+
 def validate_manifest(payload: dict) -> list[dict]:
     if payload.get("format") != "openai-cbz-reversible-merge":
         raise ValueError("拆分清单格式不受支持")
@@ -130,7 +145,7 @@ def restore_reversible(source_path: Path, output_dir: Path, manifest: dict) -> l
                             raise ValueError(
                                 f"第 {position} 项缺少还原数据：{record.get('filename')}"
                             )
-                        restored.writestr(info, merged.read(data_name))
+                        copy_member_streaming(restored, info, merged, data_name)
                         if member_index % 100 == 0:
                             print(f"    {member_index}/{len(members)}", flush=True)
                 with zipfile.ZipFile(output, "r") as check:
@@ -265,11 +280,15 @@ def restore_legacy(source_path: Path, output_dir: Path) -> list[Path]:
                 with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as restored:
                     page_count = 0
                     if position == 1 and cover is not None:
-                        restored.writestr(Path(cover.filename).name, merged.read(cover))
+                        cover_info = zipfile.ZipInfo(Path(cover.filename).name)
+                        cover_info.compress_type = zipfile.ZIP_DEFLATED
+                        copy_member_streaming(restored, cover_info, merged, cover.filename)
                         page_count += 1
                     for info in members:
                         relative = info.filename.replace("\\", "/").split("/", 1)[1]
-                        restored.writestr(relative, merged.read(info))
+                        output_info = zipfile.ZipInfo(relative)
+                        output_info.compress_type = zipfile.ZIP_DEFLATED
+                        copy_member_streaming(restored, output_info, merged, info.filename)
                         if Path(relative).suffix.casefold() in IMAGE_EXTS:
                             page_count += 1
                     restored.writestr("ComicInfo.xml", basic_comicinfo(title, page_count))

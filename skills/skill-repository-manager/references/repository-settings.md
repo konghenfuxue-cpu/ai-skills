@@ -44,7 +44,7 @@ C:\Users\lv\AppData\Local\GitHubDesktop\GitHubDesktop.exe
 
 | Skill | 源目录 | 状态 |
 |---|---|---|
-| `cbz-workflow` | `skills/cbz-workflow` | 测试中，已安装；2026-09-05 可逆删除边界与真实 CBZ 兼容修复通过 |
+| `cbz-workflow` | `skills/cbz-workflow` | 稳定（本地核心），已安装；2026-09-05 300 页与超过 2 GiB ZIP64 流式验证通过 |
 | `skill-repository-manager` | `skills/skill-repository-manager` | 稳定，已安装；2026-09-05 多次真实提交、推送与安装同步通过 |
 | `epub-repair` | `skills/epub-repair` | 稳定，已安装；2026-09-05 真实 EPUB 检查与临时副本修复通过 |
 | `calibre-workflow` | `skills/calibre-workflow` | 稳定，已安装；2026-09-05 真实书库只读审计通过 |
