@@ -1,6 +1,20 @@
-# Agent Skills
+# 数字书库与漫画 Agent Skills
 
-这个公开仓库收录可在 Codex 中使用的 Agent Skills、配套脚本、参考资料和测试记录。当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
+## 这个项目有什么用
+
+这是一个面向个人数字书库的公开 Agent Skills 工具集，让 Codex 按经过测试的流程处理漫画、电子书和 Calibre 书库，而不必在每次任务中重新说明工具、路径规则和安全要求。
+
+它目前可以：
+
+- 检查、合并、拆分和整理 CBZ，并维护 `ComicInfo.xml` 与可逆合并元数据；
+- 从合并后的 CBZ 中删除指定子合集，同时保留剩余内容的拆分还原能力；
+- 检查 EPUB 的 ZIP 包装、OPF、目录和章节引用，并安全修复可确定的问题；
+- 只读审计 Calibre 书库，定位缺失格式、异常路径和重复候选；
+- 管理这些 Skill 的测试、GitHub 备份、安装、更新与恢复流程。
+
+项目强调本地处理、保留原文件、修改前确认和修改后验证。它不包含漫画或电子书文件，不绕过 DRM，也不会在没有任务请求时自动扫描书库。
+
+当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
 当前公开稳定版：[`v1.0.0`](https://github.com/konghenfuxue-cpu/ai-skills/tree/v1.0.0)。无需 GitHub 账号即可克隆或下载。
 
