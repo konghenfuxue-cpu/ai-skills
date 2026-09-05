@@ -34,6 +34,10 @@ python -m pip install jmcomic Pillow zhconv
 - 使用 JMComic 功能时，请自行确认当地法律、站点条款和内容授权。
 - 部分功能仍处于“测试中”，详见下方状态表和各 Skill 的 `evals/`。
 
+## 维护者本地配置
+
+公开文档必须使用通用的占位符和说明，不包含维护者的用户名、电脑路径、邮箱或凭据。本地维护时，复制 `LOCAL.md.example` 为 `LOCAL.md`，并在其中记录路径和覆盖规则。`LOCAL.md` 已被 Git 忽略，任何 AI 在修改或发布前都应先读取它；提交前仍要确认暂存文件不包含本地个人化内容。
+
 ## Skill 目录
 
 | Skill | 状态 | 用途 | 最近测试 |

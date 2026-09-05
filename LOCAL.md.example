@@ -1,0 +1,17 @@
+# 本地维护者覆盖说明（模板）
+这是本地文件模板。复制为仓库根目录的 `LOCAL.md` 后再填写。`LOCAL.md` 被 Git 忽略，不得暂存、提交或推送。
+
+## 给后续 AI 的规则
+
+1. 在本机修改前，先读取此文件。
+2. 本地 Markdown 可使用实际路径和本机操作步骤。
+3. 准备推送 GitHub 时，公开文档必须改回通用表达（如 `%USERPROFILE%`、`python`、占位路径），不能包含个人路径、邮箱、账号、Cookie、Token 或任何凭据。
+4. 本地个人化 Markdown 和公开版本的通用 Markdown 可以不同；不要因为推送而直接将前者一起提交。
+5. 提交前运行 `git status --short` 和 `git diff --cached --check`，只暂存明确审核过的公开文件。
+
+## 本机值（在 LOCAL.md 中填写）
+
+- 源仓库：`<你的本地仓库路径>`
+- Codex Skills 目录：`<你的 Codex Skills 路径>`
+- Python 解释器：`<你的 Python 路径>`
+- 其他本机配置：`<按需填写，不得记入凭据>`

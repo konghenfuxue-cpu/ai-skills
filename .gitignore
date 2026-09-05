@@ -26,3 +26,6 @@ __pycache__/
 .env
 *.key
 secrets.*
+
+# 维护者本机路径与个人化说明（不提交）
+LOCAL.md
