@@ -36,8 +36,15 @@ $env:PYTHONUTF8='1'
 先执行只读检查：
 
 ```powershell
-git -C 'D:\ai-skill\skill' status --short
+& 'D:\ai-skill\skill\skills\skill-repository-manager\scripts\check-skill-repo.ps1'
 git -C 'D:\ai-skill\skill' diff --check
+```
+
+该检查会同时列出 Git 状态、远程地址、每个源 Skill 的入口文件，以及是否存在对应的 Codex 安装副本。需要查看更细的暂存内容时，再执行：
+
+```powershell
+git -C 'D:\ai-skill\skill' status --short
+git -C 'D:\ai-skill\skill' diff --cached --stat
 git -C 'D:\ai-skill\skill' remote -v
 ```
 
