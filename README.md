@@ -48,8 +48,8 @@ python -m pip install jmcomic Pillow zhconv
 |---|---|---|---|
 | cbz-workflow | 测试中 | CBZ 合并、拆分、检测和元数据 | 2026-09-05 可逆删除边界与真实 CBZ 兼容修复通过 |
 | skill-repository-manager | 稳定 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-05 多次真实提交、推送与安装同步通过 |
-| epub-repair | 测试中 | EPUB 包装、目录和结构检查与安全修复 | 2026-09-05 隔离微型 EPUB 检查与修复通过 |
-| calibre-workflow | 测试中 | Calibre 书库只读审计、格式检查和重复候选识别 | 2026-09-05 隔离书库审计通过 |
+| epub-repair | 测试中 | EPUB 包装、目录和结构检查与安全修复 | 2026-09-05 隔离修复与真实 EPUB 检查通过 |
+| calibre-workflow | 稳定 | Calibre 书库只读审计、格式检查和重复候选识别 | 2026-09-05 真实书库只读审计通过 |
 
 ## 状态说明
 

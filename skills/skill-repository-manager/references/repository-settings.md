@@ -46,5 +46,5 @@ C:\Users\lv\AppData\Local\GitHubDesktop\GitHubDesktop.exe
 |---|---|---|
 | `cbz-workflow` | `skills/cbz-workflow` | 测试中，已安装；2026-09-05 可逆删除边界与真实 CBZ 兼容修复通过 |
 | `skill-repository-manager` | `skills/skill-repository-manager` | 稳定，已安装；2026-09-05 多次真实提交、推送与安装同步通过 |
-| `epub-repair` | `skills/epub-repair` | 测试中，已安装；2026-09-05 隔离微型 EPUB 检查与修复通过 |
-| `calibre-workflow` | `skills/calibre-workflow` | 测试中，已安装；2026-09-05 隔离书库审计通过 |
+| `epub-repair` | `skills/epub-repair` | 测试中，已安装；2026-09-05 隔离修复与真实 EPUB 检查通过 |
+| `calibre-workflow` | `skills/calibre-workflow` | 稳定，已安装；2026-09-05 真实书库只读审计通过 |
