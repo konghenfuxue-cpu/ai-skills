@@ -1,0 +1,4 @@
+interface:
+  display_name: "EPUB 检查与修复"
+  short_description: "检查并安全修复 EPUB 包装、目录和结构引用"
+  default_prompt: "使用 $epub-repair 检查这个 EPUB 的结构，先报告问题，不覆盖原文件。"
