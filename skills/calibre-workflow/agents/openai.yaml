@@ -1,0 +1,4 @@
+interface:
+  display_name: "Calibre 书库审计"
+  short_description: "只读检查 Calibre 书库、格式文件与重复候选"
+  default_prompt: "使用 $calibre-workflow 只读审计这个 Calibre 书库，先报告问题，不修改任何书籍。"
