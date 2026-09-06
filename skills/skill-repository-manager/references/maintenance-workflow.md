@@ -57,6 +57,15 @@ git -C $repo commit -m '简短说明'
 git -C $repo push origin main
 ```
 
+如果仓库配置了名为 `backup` 的私有远端，在公开远端成功后同步当前分支和标签：
+
+```powershell
+git -C $repo push backup main
+git -C $repo push backup --tags
+```
+
+两个远端分别核验并报告；一个远端失败时不要把整体状态称为已同步。
+
 不使用笼统提交来掩盖未检查文件。GitHub Desktop 中对应流程是：检查 Changes → 填写 Summary → Commit to main → Push origin。
 
 ## 安装到 Codex
