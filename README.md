@@ -1,5 +1,9 @@
 # 数字书库与漫画 Agent Skills
 
+[![Tests](https://github.com/konghenfuxue-cpu/ai-skills/actions/workflows/tests.yml/badge.svg)](https://github.com/konghenfuxue-cpu/ai-skills/actions/workflows/tests.yml)
+[![Latest release](https://img.shields.io/github/v/release/konghenfuxue-cpu/ai-skills)](https://github.com/konghenfuxue-cpu/ai-skills/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ## 这个项目有什么用
 
 这是一个面向个人数字书库的公开 Agent Skills 工具集，让 Codex 按经过测试的流程处理漫画、电子书和 Calibre 书库，而不必在每次任务中重新说明工具、路径规则和安全要求。
@@ -16,7 +20,7 @@
 
 当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
-当前公开稳定版：[`v1.0.0`](https://github.com/konghenfuxue-cpu/ai-skills/tree/v1.0.0)。无需 GitHub 账号即可克隆或下载。
+当前公开稳定版：[`v1.0.1`](https://github.com/konghenfuxue-cpu/ai-skills/releases/tag/v1.0.1)。无需 GitHub 账号即可克隆或下载。
 
 详细教程：
 
