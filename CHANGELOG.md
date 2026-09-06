@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+## 1.0.1 - 2026-09-06
+
 ### Added
 
 - 公开版安装与使用教程。
@@ -14,6 +16,11 @@
 - 项目展示名称更新为“数字书库与漫画 Agent Skills”。
 - 公开文档和 Skill 配置改用通用路径。
 - JMComic 工具支持 `JMCOMIC_DOWNLOAD_ROOT` 或运行时输入下载根目录。
+- GitHub Actions 在 Windows Runner 中固定使用 UTF-8，并升级到 Node.js 24 运行环境。
+
+### Verified
+
+- Python 3.11 和 3.12 的编译检查与 CBZ 可逆合并、拆分、删除自动测试通过。
 
 ## 1.0.0 - 2026-09-05
 
