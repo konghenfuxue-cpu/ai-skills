@@ -1,11 +1,11 @@
 ---
 name: epub-repair
-description: 检查和安全修复本地 EPUB 的 ZIP 包装、mimetype、container.xml、OPF manifest/spine 与目录引用；当任务涉及 EPUB 无法打开、目录失效、结构损坏或 Calibre 导入失败时使用。不用于电子书推荐、内容改写或 DRM 移除。
+description: 检查并安全修复本地 EPUB 的 ZIP 包装、container.xml、OPF、spine 和目录引用；用于 EPUB 结构损坏或导入失败。
 ---
 
 # EPUB 检查与修复
 
-先识别故障层级，再决定是否修改。处理具体文件前读取[EPUB 结构与修复边界](references/epub-structure.md)。
+先识别故障层级。普通结构检查可直接使用脚本；需要修复或解释不确定问题时，读取[EPUB 结构与修复边界](references/epub-structure.md)。
 
 ## 工具
 
@@ -29,9 +29,6 @@ python scripts/epub_check_repair.py "书名.epub" --repair
 
 ## 完成标准
 
-- 输出文件存在且非空；
-- ZIP 可完整读取；
-- `mimetype` 为首个未压缩成员且内容准确；
-- `container.xml` 可定位并解析 OPF；
-- manifest 和 spine 引用均有明确检查结果；
-- 报告仍未解决的问题，不能把部分修复称为完全成功。
+- 只检查：报告 ZIP、`mimetype`、container、OPF、manifest、spine 和导航引用的检查结果，并定位发现的问题。
+- 执行修复：输出文件存在且非空，ZIP 可完整读取，修复目标已重新检查，同时报告仍未解决的问题。
+- 只有全部相关检查通过时才报告完全成功。
