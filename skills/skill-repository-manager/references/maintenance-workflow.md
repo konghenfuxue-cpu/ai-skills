@@ -49,22 +49,33 @@ git -C $repo diff --cached --stat
 git -C $repo remote -v
 ```
 
-确认没有敏感或大文件后：
+确认没有凭据或大文件后提交，并先同步私有备份：
 
 ```powershell
 git -C $repo add <明确的文件>
 git -C $repo commit -m '简短说明'
-git -C $repo push origin main
-```
-
-如果仓库配置了名为 `backup` 的私有远端，在公开远端成功后同步当前分支和标签：
-
-```powershell
 git -C $repo push backup main
 git -C $repo push backup --tags
 ```
 
-两个远端分别核验并报告；一个远端失败时不要把整体状态称为已同步。
+私有备份成功后，审查公开远端尚未包含的全部提交与文件，而不只查看最后一次提交：
+
+```powershell
+git -C $repo log --oneline origin/main..HEAD
+git -C $repo diff --name-status origin/main..HEAD
+git -C $repo diff origin/main..HEAD
+```
+
+公开审查需确认没有维护者绝对路径、账号资料、本地配置、凭据、真实书籍或漫画以及不适合公开的日志和测试样本。通过后再执行：
+
+```powershell
+git -C $repo push origin main
+git -C $repo push origin --tags
+```
+
+`LOCAL.md`、Obsidian 工作区和其他被 `.gitignore` 排除的内容不会进入私有 Git 备份。需要备份私有专属文件时，使用与公开 `main` 隔离的分支或备份方案；不要先把它们提交到将来会推送公开的历史中。
+
+两个远端分别核验并报告；私有备份成功不代表公开发布审查已经通过。
 
 不使用笼统提交来掩盖未检查文件。GitHub Desktop 中对应流程是：检查 Changes → 填写 Summary → Commit to main → Push origin。
 
@@ -88,6 +99,8 @@ git -C $repo push backup --tags
 Git 源仓库修改
 → 测试与验证
 → Git 提交
+→ Push backup
+→ 审查 origin/main..HEAD
 → Push origin
 → 更新 Codex 安装副本
 → 再次验证
