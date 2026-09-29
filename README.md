@@ -14,13 +14,14 @@
 - 从合并后的 CBZ 中删除指定子合集，同时保留剩余内容的拆分还原能力；
 - 检查 EPUB 的 ZIP 包装、OPF、目录和章节引用，并安全修复可确定的问题；
 - 只读审计 Calibre 书库，定位缺失格式、异常路径和重复候选；
+- 润色中文文章、评论和文档，同时保留事实、确定程度和作者声音；
 - 管理这些 Skill 的测试、GitHub 备份、安装、更新与恢复流程。
 
 项目强调本地处理、保留原文件、修改前确认和修改后验证。它不包含漫画或电子书文件，不绕过 DRM，也不会在没有任务请求时自动扫描书库。
 
 当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
-当前公开稳定版：[`v1.0.1`](https://github.com/konghenfuxue-cpu/ai-skills/releases/tag/v1.0.1)。无需 GitHub 账号即可克隆或下载。
+当前公开稳定版：[`v1.1.0`](https://github.com/konghenfuxue-cpu/ai-skills/releases/tag/v1.1.0)。无需 GitHub 账号即可克隆或下载。
 
 详细教程：
 
@@ -29,6 +30,7 @@
 - [Skill 仓库管理使用说明](Skill仓库管理使用说明.md)
 - [EPUB Repair 指南](skills/epub-repair/SKILL.md)
 - [Calibre Workflow 指南](skills/calibre-workflow/SKILL.md)
+- [Humanizer-zh 指南](skills/humanizer-zh/README.md)
 
 参与和维护：
 
@@ -52,6 +54,7 @@ Copy-Item -Recurse -Force '.\ai-skills\skills\cbz-workflow' "$env:USERPROFILE\.c
 Copy-Item -Recurse -Force '.\ai-skills\skills\epub-repair' "$env:USERPROFILE\.codex\skills\epub-repair"
 Copy-Item -Recurse -Force '.\ai-skills\skills\calibre-workflow' "$env:USERPROFILE\.codex\skills\calibre-workflow"
 Copy-Item -Recurse -Force '.\ai-skills\skills\skill-repository-manager' "$env:USERPROFILE\.codex\skills\skill-repository-manager"
+Copy-Item -Recurse -Force '.\ai-skills\skills\humanizer-zh' "$env:USERPROFILE\.codex\skills\humanizer-zh"
 ```
 
 安装后重启 Codex。若只需要一个 Skill，只复制对应子目录即可。`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。安装 CBZ 中 JMComic 下载与打包功能的可选依赖：
@@ -80,6 +83,10 @@ python -m pip install jmcomic Pillow zhconv
 
 ```text
 使用 $skill-repository-manager 检查我的源仓库、GitHub 和 Codex 安装副本是否同步。
+```
+
+```text
+使用 $humanizer-zh 润色这篇中文文章，保留原有事实、语气和不确定程度。
 ```
 
 ### 直接运行只读检查
@@ -117,9 +124,9 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 | skill-repository-manager | 稳定 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-05 多次真实提交、推送与安装同步通过 |
 | epub-repair | 稳定 | EPUB 包装、目录和结构检查与安全修复 | 2026-09-29 自动测试：新文件修复、原文件保持、OPF 歧义停止；此前有真实 EPUB 验证 |
 | calibre-workflow | 稳定 | Calibre 书库只读审计、格式检查和重复候选识别 | 2026-09-29 自动测试：缺失文件、重复候选、数据库保持不变；此前有真实书库验证 |
-| humanizer-zh | 待发布 | 中文文本润色与原意核对 | 2026-09-29 入口结构检查通过；18 个文本案例与文件结构样例见 Skill 内测试说明 |
+| humanizer-zh | 稳定 | 中文文本润色与原意核对 | 2026-09-29 Skill 格式验证通过；18 个文本案例与文件结构样例见 Skill 内测试说明 |
 
-`humanizer-zh` 的正式维护位置是本仓库的 `skills/humanizer-zh/`，当前尚未发布，尚未进入公开稳定版 `v1.0.1`；上游项目的独立克隆仅供对照更新，Codex 目录是安装副本。
+`humanizer-zh` 的正式维护位置是本仓库的 `skills/humanizer-zh/`；上游项目的独立克隆仅供对照更新，Codex 目录是安装副本。
 
 ## 状态说明
 

@@ -8,7 +8,7 @@
 
 ## 安装
 
-此目录是数字书库 Skills 仓库维护的副本，当前尚未进入公开稳定版。请从已验证的本仓库工作区安装 `skills/humanizer-zh/`，保留其中的 `SKILL.md`、`tests/` 和 `LICENSE`。
+此目录是数字书库 Skills 仓库维护的正式版本。请从本仓库安装 `skills/humanizer-zh/`，保留其中的 `SKILL.md`、`tests/` 和 `LICENSE`。
 
 - **Codex**：Windows 用户目录为 `%USERPROFILE%\.codex\skills\humanizer-zh`；其他系统对应 `~/.codex/skills/humanizer-zh`。
 - **Claude Code**：Windows 用户目录为 `%USERPROFILE%\.claude\skills\humanizer-zh`；其他系统对应 `~/.claude/skills/humanizer-zh`。
