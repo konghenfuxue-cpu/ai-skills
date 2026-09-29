@@ -31,3 +31,4 @@
 | `skill-repository-manager` | `skills/skill-repository-manager` | 稳定，已安装；2026-09-05 多次真实提交、推送与安装同步通过 |
 | `epub-repair` | `skills/epub-repair` | 稳定，已安装；2026-09-05 真实 EPUB 检查与临时副本修复通过 |
 | `calibre-workflow` | `skills/calibre-workflow` | 稳定，已安装；2026-09-05 真实书库只读审计通过 |
+| `humanizer-zh` | `skills/humanizer-zh` | 待发布，已安装；2026-09-29 入口结构检查通过，人工评测说明见 Skill 内 `tests/README.md` |

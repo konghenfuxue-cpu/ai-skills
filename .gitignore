@@ -15,6 +15,9 @@ output/
 __pycache__/
 *.pyc
 
+# 本地 codebase-memory 索引（可重新生成）
+.codebase-memory/
+
 # 不保存实际电子书和漫画
 *.cbz
 *.cbr
