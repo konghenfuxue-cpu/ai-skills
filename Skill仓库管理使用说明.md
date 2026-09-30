@@ -219,9 +219,9 @@ $repo = (Get-Location).Path
 - GitHub 远程地址；
 - 源仓库中的 Skill；
 - 每个 Skill 是否包含 `SKILL.md`；
-- 每个 Skill 是否已经安装到 Codex。
+- 每个 Skill 是否已经安装到 Codex，以及源文件与安装副本的 SHA256 差异。
 
-它只读取状态，不会提交、推送、覆盖或删除文件。
+它只读取状态，不会提交、推送、覆盖或删除文件。添加 `-Json -FailOnDrift` 可输出机器可读结果，并在普通文件缺失、内容不同或多出时返回退出码 1。个人配置 `references/local-settings.md` 的内容差异单独报告；独立安装的 Skill 不计入同步失败。该检查不查询 GitHub 远端，不能单独证明已完成推送。
 
 ## 9. 上传 GitHub
 

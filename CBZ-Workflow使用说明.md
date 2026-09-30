@@ -176,6 +176,8 @@ Pillow 12.3.0
 zhconv
 ```
 
+当前 `main` 中的双击下载入口会在工具目录建立独立的 `.venv`，并按 `scripts/jmcomic-download-pack/requirements.txt` 安装固定版本的直接依赖。首次运行需要联网；之后由 `check_dependencies.py` 核对版本和导入。直接运行 Python 脚本时，建议自行激活相应虚拟环境。详细步骤见 `scripts/jmcomic-download-pack/使用说明.txt`。
+
 检查 Python：
 
 ```powershell
