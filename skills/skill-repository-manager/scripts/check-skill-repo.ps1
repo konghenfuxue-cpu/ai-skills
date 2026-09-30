@@ -17,22 +17,22 @@ if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container)) {
 function Get-SkillFiles([string]$Root) {
     $files = @{}
     if (-not (Test-Path -LiteralPath $Root -PathType Container)) { return $files }
-    $resolved = (Resolve-Path -LiteralPath $Root).Path.TrimEnd('\', '/')
     # 不进入虚拟环境或缓存目录，避免读取大量依赖文件。
-    $pending = [System.Collections.Generic.Stack[string]]::new()
-    $pending.Push($resolved)
+    $pending = [System.Collections.Generic.Stack[object]]::new()
+    $pending.Push([PSCustomObject]@{ Path = $Root; Relative = '' })
     while ($pending.Count -gt 0) {
-        foreach ($item in Get-ChildItem -LiteralPath $pending.Pop() -Force) {
+        $current = $pending.Pop()
+        foreach ($item in Get-ChildItem -LiteralPath $current.Path -Force) {
             if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { continue }
+            $relative = if ($current.Relative) { "$($current.Relative)/$($item.Name)" } else { $item.Name }
             if ($item.PSIsContainer) {
                 if ($item.Name -notin @('__pycache__', '.venv', 'venv', '.git', '.pytest_cache', '.ruff_cache')) {
-                    $pending.Push($item.FullName)
+                    $pending.Push([PSCustomObject]@{ Path = $item.FullName; Relative = $relative })
                 }
                 continue
             }
             if ($item.Name -match '\.(pyc|pyo|log|tmp)$' -or
                 $item.Name -in @('option.yml', 'selected_id.txt', '.env', 'LOCAL.md')) { continue }
-            $relative = $item.FullName.Substring($resolved.Length + 1).Replace('\', '/')
             $files[$relative] = $item.FullName
         }
     }
