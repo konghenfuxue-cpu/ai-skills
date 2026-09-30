@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions DisableDelayedExpansion
 title JMComic Download and CBZ Builder
 
 cd /d "%~dp0"
@@ -16,13 +16,19 @@ if not exist "%~dp0option.yml" goto NO_OPTION
 where python.exe >nul 2>nul
 if errorlevel 1 goto NO_PYTHON
 
-python.exe -c "import jmcomic; import rich; import yaml; import PIL; import zhconv" >nul 2>nul
+set "TOOL_PYTHON=%~dp0.venv\Scripts\python.exe"
+if not exist "%TOOL_PYTHON%" python.exe -m venv "%~dp0.venv"
+if not exist "%TOOL_PYTHON%" goto INSTALL_FAILED
+
+"%TOOL_PYTHON%" "%~dp0check_dependencies.py"
 if errorlevel 1 goto INSTALL_DEPS
 goto ASK_ID
 
 :INSTALL_DEPS
-echo Installing required Python packages...
-python.exe -m pip install --upgrade jmcomic rich pyyaml pillow zhconv
+echo Installing pinned packages into the tool's private environment...
+"%TOOL_PYTHON%" -m pip install -r "%~dp0requirements.txt"
+if errorlevel 1 goto INSTALL_FAILED
+"%TOOL_PYTHON%" "%~dp0check_dependencies.py"
 if errorlevel 1 goto INSTALL_FAILED
 
 :ASK_ID
@@ -43,7 +49,7 @@ echo [ERROR] Invalid menu choice.
 goto ASK_ID
 
 :SEARCH_ID
-python.exe "%~dp0search_and_select.py" "%~dp0option.yml" "%~dp0selected_id.txt"
+"%TOOL_PYTHON%" "%~dp0search_and_select.py" "%~dp0option.yml" "%~dp0selected_id.txt"
 if errorlevel 1 goto SEARCH_FAILED
 set "JM_ID="
 if not exist "%~dp0selected_id.txt" goto ASK_ID
@@ -51,7 +57,7 @@ for %%Z in ("%~dp0selected_id.txt") do if %%~zZ==0 goto ASK_ID
 goto SELECT_SIZE
 
 :RESUME_SCAN
-python.exe "%~dp0resume_scan.py" "%DOWNLOAD_ROOT%" "%~dp0option.yml" "%~dp0pack_cbz.py"
+"%TOOL_PYTHON%" "%~dp0resume_scan.py" "%DOWNLOAD_ROOT%" "%~dp0option.yml" "%~dp0pack_cbz.py"
 if errorlevel 1 goto PACK_FAILED
 goto END
 
@@ -99,11 +105,11 @@ if errorlevel 1 (
 )
 echo.
 echo Downloading JM%JM_ID%...
-jmcomic.exe %JM_ID% --option "%~dp0option.yml"
+"%~dp0.venv\Scripts\jmcomic.exe" %JM_ID% --option "%~dp0option.yml"
 set "DOWNLOAD_RC=%ERRORLEVEL%"
 if not "%DOWNLOAD_RC%"=="0" echo [WARNING] Download returned error; creating the compact integrity report now.
 echo Creating CBZ for JM%JM_ID%...
-python.exe "%~dp0pack_cbz.py" %JM_ID% "%DOWNLOAD_ROOT%" 25 %MAX_WIDTH% 85 "%~dp0option.yml" %DOWNLOAD_RC%
+"%TOOL_PYTHON%" "%~dp0pack_cbz.py" %JM_ID% "%DOWNLOAD_ROOT%" 25 %MAX_WIDTH% 85 "%~dp0option.yml" %DOWNLOAD_RC%
 if errorlevel 1 (
     echo [WARNING] JM%JM_ID% is incomplete or CBZ creation failed. Check its integrity report.
     set "FAILED=1"

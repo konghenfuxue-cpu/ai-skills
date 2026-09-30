@@ -62,10 +62,13 @@ Copy-Item -Recurse -Force '.\ai-skills\skills\txt-to-epub-template' "$env:USERPR
 安装后重启 Codex。若只需要一个 Skill，只复制对应子目录即可。`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。安装 CBZ 中 JMComic 下载与打包功能的可选依赖：
 
 ```powershell
-python -m pip install jmcomic Pillow zhconv
+python -m pip install -r skills/cbz-workflow/scripts/jmcomic-download-pack/requirements.txt
+python skills/cbz-workflow/scripts/jmcomic-download-pack/check_dependencies.py
 ```
 
 ## 快速开始
+
+双击 JMComic 下载入口时，工具会自动创建自身的 `.venv` 并安装同一份固定依赖；直接使用命令行时建议自行创建虚拟环境。直接依赖固定版本，传递依赖由 pip 解析。离线行为测试的运行方法见 [贡献指南](CONTRIBUTING.md)。
 
 ### 在 Codex 中使用
 
@@ -126,12 +129,12 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 
 | Skill | 状态 | 用途 | 最近测试 |
 |---|---|---|---|
-| cbz-workflow | 稳定（本地核心） | CBZ 合并、拆分、检测和元数据 | 2026-09-05 300 页与超过 2 GiB ZIP64 流式验证通过 |
-| skill-repository-manager | 稳定 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-05 多次真实提交、推送与安装同步通过 |
+| cbz-workflow | 稳定（本地核心） | CBZ 合并、拆分、检测和元数据 | 2026-09-30 自动测试：流式元数据写入、重复条目保留、打包失败清理和完整性报告；此前有 ZIP64 验证 |
+| skill-repository-manager | 稳定 | 创建、测试、备份、安装和更新个人 Skills | 2026-09-30 自动测试：安装副本 SHA256、缺失与多余文件、个人配置差异 |
 | epub-repair | 稳定 | EPUB 包装、目录和结构检查与安全修复 | 2026-09-29 自动测试：新文件修复、原文件保持、OPF 歧义停止；此前有真实 EPUB 验证 |
 | calibre-workflow | 稳定 | Calibre 书库只读审计、格式检查和重复候选识别 | 2026-09-29 自动测试：缺失文件、重复候选、数据库保持不变；此前有真实书库验证 |
 | humanizer-zh | 稳定 | 中文文本润色与原意核对 | 2026-09-29 Skill 格式验证通过；18 个文本案例与文件结构样例见 Skill 内测试说明 |
-| txt-to-epub-template | 稳定 | 中文小说 TXT 转 EPUB 3、分级目录与制作说明 | 2026-09-30 隔离样本和真实 EPUB 验证；番外父级、manifest、spine 与目标页一致 |
+| txt-to-epub-template | 稳定 | 中文小说 TXT 转 EPUB 3、分级目录与制作说明 | 2026-09-30 自动测试：番外目录和全部引用、GB18030 原稿、拒绝覆盖及失败清理；此前有真实 EPUB 验证 |
 
 `humanizer-zh` 的正式维护位置是本仓库的 `skills/humanizer-zh/`；上游项目的独立克隆仅供对照更新，Codex 目录是安装副本。
 

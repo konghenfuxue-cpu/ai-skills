@@ -6,6 +6,7 @@ import mimetypes
 import re
 import uuid
 import zipfile
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -258,6 +259,19 @@ def introduction_html(description: str) -> str:
 <body class="zhizuobB1">{body}</body></html>'''
 
 
+@contextmanager
+def new_epub_archive(output: Path):
+    # 独占创建消除 exists() 与打开文件之间的覆盖窗口。
+    stream = output.open("xb")
+    try:
+        with stream, zipfile.ZipFile(stream, "w") as archive:
+            yield archive
+    except BaseException:
+        # 包括 Ctrl+C；退出 with 后 Windows 文件句柄已经关闭。
+        output.unlink(missing_ok=True)
+        raise
+
+
 def build(args: argparse.Namespace) -> None:
     source = Path(args.input).resolve()
     output = Path(args.output).resolve()
@@ -322,7 +336,7 @@ def build(args: argparse.Namespace) -> None:
 <container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>'''
     cover_page = cover_html(args.title, cover_name)
     output.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(output, "w") as zf:
+    with new_epub_archive(output) as zf:
         zf.writestr("mimetype", "application/epub+zip", compress_type=zipfile.ZIP_STORED)
         zf.writestr("META-INF/container.xml", container)
         zf.writestr("OEBPS/content.opf", opf)

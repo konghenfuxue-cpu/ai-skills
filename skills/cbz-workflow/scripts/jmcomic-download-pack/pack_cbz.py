@@ -4,7 +4,9 @@ import io
 import os
 import re
 import sys
+import tempfile
 import zipfile
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -259,10 +261,25 @@ def processed_image_bytes(path: Path, max_width: int, quality: int):
         return output.getvalue()
 
 
+@contextmanager
+def validated_archive(output: Path):
+    """Build beside the destination, validate, then replace; clean up on failure."""
+    fd, name = tempfile.mkstemp(prefix=f".{output.stem}_", suffix=".tmp.cbz", dir=output.parent)
+    os.close(fd)
+    temp = Path(name)
+    try:
+        with zipfile.ZipFile(temp, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
+            yield archive
+        with zipfile.ZipFile(temp) as archive:
+            if not archive.namelist() or archive.testzip() is not None:
+                raise zipfile.BadZipFile("新生成的 CBZ 为空或校验失败")
+        os.replace(temp, output)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
 def make_cbz(output: Path, chapters, cover_bytes: bytes | None, max_width: int, quality: int):
-    temp = output.with_suffix(".cbz.tmp")
-    temp.unlink(missing_ok=True)
-    with zipfile.ZipFile(temp, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
+    with validated_archive(output) as archive:
         if cover_bytes:
             archive.writestr("000-cover.jpg", cover_bytes)
         for chapter in chapters:
@@ -270,20 +287,16 @@ def make_cbz(output: Path, chapters, cover_bytes: bytes | None, max_width: int, 
             for image_no, image in enumerate(chapter.images, 1):
                 archive.writestr(f"{chapter_no:03d}/{image_no:04d}.jpg",
                                  processed_image_bytes(image, max_width, quality))
-    temp.replace(output)
 
 
 def make_notice_cbz(output: Path, notices, max_width: int, quality: int):
     if not notices:
         return
-    temp = output.with_suffix(".cbz.tmp")
-    temp.unlink(missing_ok=True)
-    with zipfile.ZipFile(temp, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
+    with validated_archive(output) as archive:
         for idx, chapter in enumerate(notices, 1):
             for image_no, image in enumerate(chapter.images, 1):
                 archive.writestr(f"{idx:03d}-{chapter.site_index:03d}/{image_no:04d}.jpg",
                                  processed_image_bytes(image, max_width, quality))
-    temp.replace(output)
 
 
 def write_pagecount_in_place(output: Path, author: str | None = None) -> int:

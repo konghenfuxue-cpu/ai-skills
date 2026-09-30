@@ -41,7 +41,24 @@ $repo = (Get-Location).Path
 git -C $repo diff --check
 ```
 
-该检查会同时列出 Git 状态、远程地址、每个源 Skill 的入口文件，以及是否存在对应的 Codex 安装副本。需要查看更细的暂存内容时，再执行：
+该检查列出 Git 状态、远程地址、Skill 入口和安装副本的逐文件 SHA256 比对结果。它检查本地源目录与安装副本，不读取远端最新提交。
+
+- `MissingFiles`：安装副本缺少的文件。
+- `ChangedFiles`：源文件与安装副本内容不同。
+- `ExtraFiles`：安装副本多出的文件。
+- `LocalConfigDifferences`：允许保留的个人配置差异，默认只有 `references/local-settings.md`；文件完全缺失仍报告为缺失。
+- 缓存、虚拟环境、日志以及 `option.yml`、`selected_id.txt`、`.env`、`LOCAL.md` 不参与比较。重解析点不跟随。
+- 独立安装且不在本仓库的 Skill 单独列出，不算同步失败。
+
+机器可读检查：
+
+```powershell
+& (Join-Path $repo 'skills\skill-repository-manager\scripts\check-skill-repo.ps1') -Json -FailOnDrift
+```
+
+`-FailOnDrift` 在发现普通文件差异、缺少安装或入口缺失时返回退出码 1；仅个人配置差异不会失败。可用 `-LocalConfigPaths` 指定其他相对配置路径。此工具只报告，不覆盖任何文件。
+
+需要查看更细的暂存内容时，再执行：
 
 ```powershell
 git -C $repo status --short

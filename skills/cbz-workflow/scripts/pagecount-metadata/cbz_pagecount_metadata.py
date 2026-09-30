@@ -338,7 +338,9 @@ def update_cbz(
                 for info in infos:
                     if info.filename in old_comicinfo_names:
                         continue
-                    target.writestr(info, source.read(info.filename))
+                    # 按 ZipInfo 打开，既限制内存，也保留重复名称条目的各自内容。
+                    with source.open(info) as reader, target.open(info, "w", force_zip64=True) as writer:
+                        shutil.copyfileobj(reader, writer, length=1024 * 1024)
                 xml_info = zipfile.ZipInfo("ComicInfo.xml")
                 xml_info.compress_type = zipfile.ZIP_DEFLATED
                 xml_info.external_attr = 0o600 << 16

@@ -14,11 +14,18 @@
 ```powershell
 git clone https://github.com/konghenfuxue-cpu/ai-skills.git
 Set-Location '.\ai-skills'
+python -m venv .venv
+& '.\.venv\Scripts\Activate.ps1'
+$env:PYTHONUTF8='1'
+$env:PYTHONIOENCODING='utf-8'
+python -m pip install -r skills/cbz-workflow/scripts/jmcomic-download-pack/requirements.txt
+python -m pip check
+python skills/cbz-workflow/scripts/jmcomic-download-pack/check_dependencies.py
 python -m compileall -q skills tests
 python -m unittest discover -s tests -v
 ```
 
-JMComic 网络功能有额外依赖和外部条件，不属于默认自动测试。提交相关改动时，应同时提供不访问网络的隔离测试。
+完整测试需要 Python 3.11 或更高版本、PowerShell 7 (`pwsh`) 和上述依赖。打包、图片处理、缺页报告通过生成的小样本及模拟站点响应验证；测试不连接 JMComic 网站，也不需要 option.yml。安装依赖需要联网。CI 在 Windows 的 Python 3.11 和 3.12 环境安装固定依赖并运行同一套测试；真实下载仍需单独验证。
 
 ## 修改要求
 

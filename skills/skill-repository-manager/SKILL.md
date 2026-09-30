@@ -22,7 +22,7 @@ description: 创建、更新、验证、发布和同步个人 Codex Skills；用
 ## 根据请求选择动作
 
 - “Skill 放在哪里/仓库是什么”：读取并回答 `repository-settings.md`。
-- “检查仓库/现在是否同步”：运行 `scripts/check-skill-repo.ps1`，报告本地状态、远程地址和安装情况。
+- “检查仓库/现在是否同步”：运行 `scripts/check-skill-repo.ps1`，报告 Git 状态、远程地址和安装副本 SHA256 差异；不据此宣称远端内容已同步。支持 `-Json` 与 `-FailOnDrift`，用法见维护流程。
 - “创建新 Skill”：使用 `$skill-creator`，在源仓库的 `skills/<skill-name>/` 创建并验证。
 - “更新现有 Skill”：只修改源仓库，保留旧功能并更新测试记录。
 - “上传 GitHub”：检查并提交后先推送私有 `backup`；再审查相对 `origin` 新增的完整历史，合格后推送公开 `origin`。

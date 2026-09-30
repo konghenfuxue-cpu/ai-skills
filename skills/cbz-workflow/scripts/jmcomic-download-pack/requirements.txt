@@ -1,0 +1,7 @@
+# Direct dependencies verified on the maintainer's local Python 3.11 environment.
+# Transitive dependencies are resolved by pip; this is not a complete lockfile.
+jmcomic==2.7.4
+rich==15.0.0
+PyYAML==6.0.3
+Pillow==12.3.0
+zhconv==1.4.3
