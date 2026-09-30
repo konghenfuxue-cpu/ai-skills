@@ -46,7 +46,7 @@ class SkillSyncTests(unittest.TestCase):
             self.assertEqual(code, 1)
             skill = report["Skills"][0]
             self.assertFalse(skill["InSync"])
-            self.assertEqual(skill["MissingFiles"], ["missing.txt"])
+            self.assertEqual(skill["MissingFiles"], ["missing.txt"], f"report={report}; installed_files={list(copy.rglob('*'))}")
             self.assertEqual(skill["ChangedFiles"], ["scripts/tool.py"])
             self.assertEqual(skill["ExtraFiles"], ["extra.txt"])
             self.assertEqual(skill["LocalConfigDifferences"], ["references/local-settings.md"])
@@ -59,7 +59,7 @@ class SkillSyncTests(unittest.TestCase):
                 self.write(root, "SKILL.md")
                 self.write(root, "references/local-settings.md", str(root))
             code, report = self.check(repo, installed)
-            self.assertEqual(code, 0)
+            self.assertEqual(code, 0, f"report={report}; installed_files={list((installed / 'example').rglob('*'))}")
             self.assertTrue(report["Skills"][0]["InSync"])
 
     def test_missing_installation_is_reported(self):
