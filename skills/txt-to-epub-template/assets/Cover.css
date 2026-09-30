@@ -1,0 +1,22 @@
+@page { margin: 0; }
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+}
+.cover-page {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.cover-page svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+}

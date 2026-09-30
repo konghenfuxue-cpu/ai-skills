@@ -1,0 +1,52 @@
+body.zhizuobB1 {
+  margin: 0;
+  padding: 1.2em;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f2eee5;
+  color: #000;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
+}
+.shuang1 {
+  width: min(38em, 92%);
+  margin: 2em auto;
+  padding: .25em;
+  border: 4px solid #3d3b4f;
+  border-radius: 20px;
+  background: #fffbf0;
+  box-shadow: 0 .6em 1.8em rgba(61, 59, 79, .16);
+}
+.shuang2 {
+  margin: 0;
+  padding: .8em 1em 1.4em;
+  border: 1px dotted #3d3b4f;
+  border-radius: 15px;
+}
+.shkuang {
+  margin: 1em 0;
+  padding-top: .5em;
+  color: #880000;
+  font-family: "Noto Sans SC", "Microsoft YaHei", "SimHei", sans-serif;
+  font-size: 1.1em;
+  font-weight: 900;
+  letter-spacing: .2em;
+  text-align: center;
+}
+.shuangkuang {
+  margin: .8em 0;
+  color: #111;
+  font-size: .95em;
+  font-weight: 300;
+  line-height: 1.8;
+  text-align: center;
+  text-indent: 0;
+  word-break: break-word;
+}
+@media (max-width: 480px) {
+  body.zhizuobB1 { padding: .6em; }
+  .shuang1 { width: 100%; margin: 1em auto; border-width: 3px; }
+  .shuang2 { padding: .6em .8em 1em; }
+}

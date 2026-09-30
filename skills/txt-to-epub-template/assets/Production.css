@@ -1,0 +1,44 @@
+body.zhizuobB1 {
+  margin: 0;
+  padding: 1.5em;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #f7f1df 0%, #d7e5d9 52%, #9eb9aa 100%);
+  color: #23453d;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "KaiTi", "STKaiti", serif;
+}
+.zhizuodB1 {
+  width: min(34em, 92%);
+  padding: 1.4em 1.6em;
+  border: 1px solid rgba(0, 85, 67, .28);
+  border-radius: 12px;
+  background: rgba(0, 65, 52, .88);
+  box-shadow: 0 .6em 2em rgba(20, 50, 42, .24);
+}
+.zhizuohB1 {
+  margin: .5em 2em 1em;
+  padding: .35em;
+  border-radius: 10px;
+  background: #007d65;
+  color: #fff;
+  font-size: .95em;
+  text-align: center;
+  letter-spacing: .16em;
+}
+.zhizuopB1, .zhizuopB2, .zhizuopB3 { text-indent: 0; text-align: center; }
+.zhizuopB1 { color: #feeeed; font-size: 1.08em; line-height: 1.9; }
+.zhizuosB1, .zhizuosB2 { color: #fedcbd; font-size: .9em; }
+.zhizuopB2 { color: #feeeed; font-size: .9em; line-height: 1.8; }
+.zhizuosB3 { color: #cde6c7; font-size: .8em; }
+.zhizuopB3 { color: #fedcbd; font-size: .82em; line-height: 1.8; }
+.zhizuopB4 { margin-top: 1.4em; color: #d7e8dd; font-size: .72em; line-height: 1.7; text-align: center; text-indent: 0; }
+.zhizuosB4 { color: #cde6c7; font-weight: bold; }
+.line { margin: 5% 2%; border: 0; border-top: 1px dotted #ccc; }
+@media (max-width: 480px) {
+  body.zhizuobB1 { padding: .7em; }
+  .zhizuodB1 { width: 100%; padding: 1em; }
+  .zhizuohB1 { margin-left: 1em; margin-right: 1em; }
+}
