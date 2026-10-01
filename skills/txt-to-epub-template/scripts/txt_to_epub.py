@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -192,6 +193,41 @@ def nav_html(title: str, sections: list[Section], include_production_note: bool)
     return xhtml(f"{title}·目录", "Navigation.css", body)
 
 
+def ncx_html(title: str, book_id: str, nav_document: str) -> str:
+    """Build an EPUB 2-compatible NCX from the EPUB 3 navigation tree."""
+    nav_root = ET.fromstring(nav_document)
+    top_list = nav_root.find(".//{*}nav/{*}ol")
+    if top_list is None:
+        raise ValueError("nav.xhtml 缺少目录列表")
+    play_order = 0
+
+    def points(ordered_list: ET.Element) -> str:
+        nonlocal play_order
+        result: list[str] = []
+        for item in ordered_list.findall("{*}li"):
+            link = item.find("{*}a")
+            if link is None or not link.get("href"):
+                raise ValueError("nav.xhtml 存在没有目标的目录项")
+            play_order += 1
+            current_order = play_order
+            label = "".join(link.itertext()).strip()
+            child_list = item.find("{*}ol")
+            children = points(child_list) if child_list is not None else ""
+            result.append(
+                f'<navPoint id="navPoint-{current_order}" playOrder="{current_order}">'
+                f'<navLabel><text>{esc(label)}</text></navLabel>'
+                f'<content src="{esc(link.get("href", ""))}"/>{children}</navPoint>'
+            )
+        return "".join(result)
+
+    nav_map = points(top_list)
+    return f'''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="zh-CN">
+<head><meta name="dtb:uid" content="{esc(book_id)}"/><meta name="dtb:depth" content="2"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head>
+<docTitle><text>{esc(title)}</text></docTitle><navMap>{nav_map}</navMap></ncx>'''
+
+
 def extra_group_html(sections: list[Section], indexes: set[int]) -> str:
     links = "".join(
         f'<li><a href="{sections[index].filename}">{esc(sections[index].title)}</a></li>'
@@ -302,6 +338,7 @@ def build(args: argparse.Namespace) -> None:
     production_date = args.production_date or datetime.now().strftime("%Y.%m.%d")
     manifest = [
         '<item id="nav" href="Text/nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
+        '<item id="ncx" href="Text/toc.ncx" media-type="application/x-dtbncx+xml"/>',
         '<item id="coverpage" href="Text/cover.xhtml" media-type="application/xhtml+xml"/>',
         '<item id="intro" href="Text/intro.xhtml" media-type="application/xhtml+xml"/>',
         f'<item id="cover-image" href="Images/{cover_name}" media-type="{cover_type}" properties="cover-image"/>',
@@ -330,17 +367,20 @@ def build(args: argparse.Namespace) -> None:
 
     opf = f'''<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="BookId">
-<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="BookId">{book_id}</dc:identifier><dc:title>{esc(args.title)}</dc:title><dc:creator>{esc(args.author)}</dc:creator><dc:language>{esc(args.language)}</dc:language><dc:description>{esc(description)}</dc:description><meta property="dcterms:modified">{modified}</meta></metadata>
-<manifest>{''.join(manifest)}</manifest><spine>{''.join(spine)}</spine></package>'''
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="BookId">{book_id}</dc:identifier><dc:title>{esc(args.title)}</dc:title><dc:creator>{esc(args.author)}</dc:creator><dc:language>{esc(args.language)}</dc:language><dc:description>{esc(description)}</dc:description><meta property="dcterms:modified">{modified}</meta><meta name="cover" content="cover-image"/></metadata>
+<manifest>{''.join(manifest)}</manifest><spine toc="ncx">{''.join(spine)}</spine><guide><reference type="cover" title="封面" href="Text/cover.xhtml"/><reference type="toc" title="目录" href="Text/nav.xhtml"/></guide></package>'''
     container = '''<?xml version="1.0" encoding="utf-8"?>
 <container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>'''
     cover_page = cover_html(args.title, cover_name)
+    navigation_page = nav_html(args.title, sections, include_production_note)
+    ncx_page = ncx_html(args.title, book_id, navigation_page)
     output.parent.mkdir(parents=True, exist_ok=True)
     with new_epub_archive(output) as zf:
         zf.writestr("mimetype", "application/epub+zip", compress_type=zipfile.ZIP_STORED)
         zf.writestr("META-INF/container.xml", container)
         zf.writestr("OEBPS/content.opf", opf)
-        zf.writestr("OEBPS/Text/nav.xhtml", nav_html(args.title, sections, include_production_note))
+        zf.writestr("OEBPS/Text/nav.xhtml", navigation_page)
+        zf.writestr("OEBPS/Text/toc.ncx", ncx_page)
         zf.writestr("OEBPS/Text/cover.xhtml", cover_page)
         zf.writestr("OEBPS/Text/intro.xhtml", introduction_html(description))
         if include_production_note:

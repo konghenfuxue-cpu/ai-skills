@@ -11,6 +11,8 @@ body.zhizuobB1 {
   font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
 }
 .shuang1 {
+  width: 92%;
+  max-width: 38em;
   width: min(38em, 92%);
   margin: 2em auto;
   padding: .25em;

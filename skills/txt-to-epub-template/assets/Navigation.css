@@ -1,12 +1,12 @@
 :root { --bg:#0a0a0c; --panel:#14141e; --text:#e8e4e0; --muted:#aaa4b2; --accent:#8b1a1a; }
-body { margin:0; padding:1.5rem; min-height:100vh; background:var(--bg); color:var(--text);
+body { margin:0; padding:1.5rem; min-height:100vh; background:#0a0a0c; background:var(--bg); color:#e8e4e0; color:var(--text);
   font-family:"Noto Serif SC","SimSun",serif; line-height:1.6; }
 nav { max-width:760px; margin:auto; padding:2rem 1.5rem; border:1px solid #292330;
-  border-radius:16px; background:var(--panel); }
+  border-radius:16px; background:#14141e; background:var(--panel); }
 h1 { margin:0 0 1.8rem; text-align:center; letter-spacing:.2em; }
 ol { padding-left:1.4rem; }
 li { margin:.4rem 0; }
-a,.toc-group { display:block; padding:.55rem .8rem; border-radius:8px; color:var(--muted); text-decoration:none; }
+a,.toc-group { display:block; padding:.55rem .8rem; border-radius:8px; color:#aaa4b2; color:var(--muted); text-decoration:none; }
 a:hover { background:#252131; color:#fff; }
 nav > ol > li > a,nav > ol > li > .toc-group { color:#d8cfdf; font-weight:600; }
 @media (max-width:600px) { body{padding:.6rem} nav{padding:1.2rem .8rem} }

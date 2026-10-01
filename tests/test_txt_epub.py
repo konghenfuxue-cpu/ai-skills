@@ -42,10 +42,21 @@ class TxtEpubTests(unittest.TestCase):
                     container = ET.fromstring(archive.read("META-INF/container.xml"))
                     opf_path = container.find(".//{*}rootfile").get("full-path")
                     opf = ET.fromstring(archive.read(opf_path))
-                    manifest = {item.get("id"): posixpath.normpath(posixpath.join(posixpath.dirname(opf_path), item.get("href"))) for item in opf.findall("{*}manifest/{*}item")}
+                    manifest_items = {item.get("id"): item for item in opf.findall("{*}manifest/{*}item")}
+                    manifest = {item_id: posixpath.normpath(posixpath.join(posixpath.dirname(opf_path), item.get("href"))) for item_id, item in manifest_items.items()}
                     for path in manifest.values():
                         self.assertIn(path, archive.namelist())
-                    spine = [manifest[item.get("idref")] for item in opf.findall("{*}spine/{*}itemref")]
+                    spine_node = opf.find("{*}spine")
+                    self.assertEqual(spine_node.get("toc"), "ncx")
+                    self.assertEqual(manifest_items["ncx"].get("media-type"), "application/x-dtbncx+xml")
+                    self.assertEqual(manifest["ncx"], "OEBPS/Text/toc.ncx")
+                    cover_meta = opf.find("{*}metadata/{*}meta[@name='cover']")
+                    self.assertIsNotNone(cover_meta)
+                    self.assertEqual(cover_meta.get("content"), "cover-image")
+                    guide = {(item.get("type"), item.get("href")) for item in opf.findall("{*}guide/{*}reference")}
+                    self.assertIn(("cover", "Text/cover.xhtml"), guide)
+                    self.assertIn(("toc", "Text/nav.xhtml"), guide)
+                    spine = [manifest[item.get("idref")] for item in spine_node.findall("{*}itemref")]
                     all_text = ""
                     for path in archive.namelist():
                         if not path.endswith(".xhtml"):
@@ -75,6 +86,37 @@ class TxtEpubTests(unittest.TestCase):
                     group_path = "OEBPS/Text/" + group.find("{*}a").get("href")
                     first_extra = "OEBPS/Text/" + children[0].get("href")
                     self.assertEqual(spine.index(group_path) + 1, spine.index(first_extra))
+
+                    def nav_entries(ordered_list, depth=1):
+                        entries = []
+                        for item in ordered_list.findall("{*}li"):
+                            link = item.find("{*}a")
+                            entries.append((depth, "".join(link.itertext()), link.get("href")))
+                            child_list = item.find("{*}ol")
+                            if child_list is not None:
+                                entries.extend(nav_entries(child_list, depth + 1))
+                        return entries
+
+                    nav_list = nav.find(".//{*}nav/{*}ol")
+                    expected_navigation = nav_entries(nav_list)
+                    ncx = ET.fromstring(archive.read("OEBPS/Text/toc.ncx"))
+                    actual_navigation = []
+
+                    def ncx_entries(nav_map, depth=1):
+                        for point in nav_map.findall("{*}navPoint"):
+                            label = point.find("{*}navLabel/{*}text").text
+                            source = point.find("{*}content").get("src")
+                            actual_navigation.append((depth, label, source))
+                            ncx_entries(point, depth + 1)
+
+                    ncx_entries(ncx.find("{*}navMap"))
+                    self.assertEqual(actual_navigation, expected_navigation)
+                    for _, _, href in actual_navigation:
+                        self.assertIn("OEBPS/Text/" + href.split("#", 1)[0], archive.namelist())
+
+                    navigation_css = archive.read("OEBPS/Styles/Navigation.css").decode("utf-8")
+                    self.assertIn("background:#0a0a0c", navigation_css)
+                    self.assertIn("color:#e8e4e0", navigation_css)
 
     def test_existing_output_is_preserved(self):
         with tempfile.TemporaryDirectory() as directory:
