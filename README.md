@@ -17,6 +17,7 @@
 - 只读审计 Calibre 书库，定位缺失格式、异常路径和重复候选；
 - 润色中文文章、评论和文档，同时保留事实、确定程度和作者声音；
 - 管理这些 Skill 的测试、GitHub 备份、安装、更新与恢复流程。
+- 记录并复用私人纠错规则，减少同类失误反复出现。
 
 项目强调本地处理、保留原文件、修改前确认和修改后验证。它不包含漫画或电子书文件，不绕过 DRM，也不会在没有任务请求时自动扫描书库。
 
@@ -57,6 +58,7 @@ Copy-Item -Recurse -Force '.\ai-skills\skills\calibre-workflow' "$env:USERPROFIL
 Copy-Item -Recurse -Force '.\ai-skills\skills\skill-repository-manager' "$env:USERPROFILE\.codex\skills\skill-repository-manager"
 Copy-Item -Recurse -Force '.\ai-skills\skills\humanizer-zh' "$env:USERPROFILE\.codex\skills\humanizer-zh"
 Copy-Item -Recurse -Force '.\ai-skills\skills\txt-to-epub-template' "$env:USERPROFILE\.codex\skills\txt-to-epub-template"
+Copy-Item -Recurse -Force '.\ai-skills\skills\correction-memory' "$env:USERPROFILE\.codex\skills\correction-memory"
 ```
 
 安装后重启 Codex。若只需要一个 Skill，只复制对应子目录即可。`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。安装 CBZ 中 JMComic 下载与打包功能的可选依赖：
@@ -98,6 +100,10 @@ python skills/cbz-workflow/scripts/jmcomic-download-pack/check_dependencies.py
 使用 $txt-to-epub-template，把中文小说 TXT 转成 EPUB；末尾连续番外建立可点击分组页。
 ```
 
+```text
+使用 $correction-memory 记住这次纠错；私人记录保存在我指定的本地文件，不上传到公开仓库。
+```
+
 ### 直接运行只读检查
 
 不使用 Codex 时，也可以在仓库根目录运行以下命令。示例均只读，不会覆盖或删除原文件。
@@ -135,6 +141,7 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 | calibre-workflow | 稳定 | Calibre 书库只读审计、格式检查和重复候选识别 | 2026-09-29 自动测试：缺失文件、重复候选、数据库保持不变；此前有真实书库验证 |
 | humanizer-zh | 稳定 | 中文文本润色与原意核对 | 2026-09-29 Skill 格式验证通过；18 个文本案例与文件结构样例见 Skill 内测试说明 |
 | txt-to-epub-template | 稳定 | 中文小说 TXT 转 EPUB 3、分级目录与制作说明 | 2026-09-30 自动测试：番外目录和全部引用、GB18030 原稿、拒绝覆盖及失败清理；此前有真实 EPUB 验证 |
+| correction-memory | 测试中 | 维护私人纠错记录并在后续相关任务中执行检查 | 2026-10-01 场景审查与 Skill 格式验证；私人记录不在仓库内 |
 
 `humanizer-zh` 的正式维护位置是本仓库的 `skills/humanizer-zh/`；上游项目的独立克隆仅供对照更新，Codex 目录是安装副本。
 
