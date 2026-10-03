@@ -13,6 +13,8 @@ description: 将中文小说 TXT 按卷、章、尾声和番外切分并生成�
 python scripts/txt_to_epub.py "原稿.txt" --title "书名" --author "作者" --output "书名.epub"
 ```
 
+Windows 上不想每本书都通过对话操作时，可双击 `scripts/拖入TXT一键制作EPUB.cmd` 选取 TXT，或把 TXT 拖到该启动器。优先将文件命名为 `书名 - 作者.txt` 或 `书名(作者).txt`；缺少作者时会弹窗询问。它调用本 Skill 的转换器，在 TXT 同目录的 `已制作EPUB` 文件夹另存成品及同名“检查报告.txt”，不覆盖旧版。报告包含结构检查、正文分段数量、网页提示清理量和章节编号疑似断档；编号断档只是线索，不等于正文缺失。无 JPG/PNG 封面时会标记兼容性提醒。命令行可运行 `python scripts/one_click_epub.py "书名 - 作者.txt" --no-gui`，用 `--help` 查看可选参数。
+
 可选参数：
 
 - `--cover 封面.jpg`：使用指定封面；省略时生成文字 SVG 封面。
