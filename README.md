@@ -23,6 +23,20 @@
 
 当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
 
+## 先选你要完成的任务
+
+| 你想做什么 | 从这里开始 |
+| --- | --- |
+| 检查、合并、拆分漫画 CBZ | [CBZ Workflow 使用说明](CBZ-Workflow使用说明.md) |
+| 排查 EPUB 损坏或导入失败 | [EPUB Repair](skills/epub-repair/SKILL.md) |
+| 把中文小说 TXT 制作为 EPUB | [TXT 转 EPUB 模板](skills/txt-to-epub-template/SKILL.md) |
+| 查找 Calibre 书库缺失文件与重复候选 | [Calibre Workflow](skills/calibre-workflow/SKILL.md) |
+| 润色中文文字 | [Humanizer-zh](skills/humanizer-zh/README.md) |
+
+**第一次使用？** 先读 [安装与使用教程](公开版安装与使用教程.md)，只安装需要的 Skill，再用一个文件副本执行只读检查。核心书库功能可直接运行 Python 脚本；需要让 Codex 按工作流执行时，再安装对应 Skill。它不是独立的图形界面书库软件，也不提供书籍资源。
+
+仓库另附 Skill 仓库管理与私人纠错记忆工具，属于维护辅助功能；不必为了处理一本书安装全部技能。
+
 当前公开稳定版：[`v1.1.0`](https://github.com/konghenfuxue-cpu/ai-skills/releases/tag/v1.1.0)。无需 GitHub 账号即可克隆或下载。
 
 详细教程：
