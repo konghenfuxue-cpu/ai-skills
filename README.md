@@ -33,7 +33,7 @@
 | 查找 Calibre 书库缺失文件与重复候选 | [Calibre Workflow](skills/calibre-workflow/SKILL.md) |
 | 润色中文文字 | [Humanizer-zh](skills/humanizer-zh/README.md) |
 
-**第一次使用？** 先读 [安装与使用教程](公开版安装与使用教程.md)，只安装需要的 Skill，再用一个文件副本执行只读检查。核心书库功能可直接运行 Python 脚本；需要让 Codex 按工作流执行时，再安装对应 Skill。它不是独立的图形界面书库软件，也不提供书籍资源。
+**第一次使用？** 先读 [从下载到第一次成功检查](新手入门.md)，从 ZIP 解压、Python 安装与独立环境开始，只检查一个文件副本。核心书库功能可直接运行 Python 脚本；需要让 Codex 按工作流执行时，再安装对应 Skill。它不是独立的图形界面书库软件，也不提供书籍资源。
 
 仓库另附 Skill 仓库管理与私人纠错记忆工具，属于维护辅助功能；不必为了处理一本书安装全部技能。
 
@@ -41,7 +41,8 @@
 
 详细教程：
 
-- [公开版安装与使用教程](公开版安装与使用教程.md)
+- [新手入门与常见问题](新手入门.md)
+- [旧 v1.0.0 安装说明（历史）](公开版安装与使用教程.md)
 - [CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)
 - [Skill 仓库管理使用说明](Skill仓库管理使用说明.md)
 - [EPUB Repair 指南](skills/epub-repair/SKILL.md)
@@ -57,30 +58,16 @@
 
 ## 安装前准备
 
-- 安装 [Git](https://git-scm.com/)、PowerShell 7 和 64 位 Python 3.11 或更高版本。
-- 确认 Codex 用户 Skill 目录：Windows 默认为 `%USERPROFILE%\.codex\skills`。
+- 使用 Windows 与 64 位 Python 3.11 或更高版本；新手下载 ZIP 不需要 Git。基础示例可用 Windows 自带 PowerShell，维护脚本另按各自要求准备 PowerShell 7。
+- 先确认当前 Codex 的 Skill 发现目录。当前官方文档使用 `%USERPROFILE%\.agents\skills`，既有旧版安装可能使用 `.codex\skills`；不要在两处重复安装同名 Skill，详见新手教程。
 - `cbz-workflow` 的基础 CBZ 功能只使用 Python 标准库；JMComic 下载功能额外需要 `jmcomic`、`Pillow` 和 `zhconv`。
 - 运行前先把 Skill 中的本机路径配置改成自己的目录，并使用小型副本测试。
 
 ## 安装
 
-```powershell
-git clone https://github.com/konghenfuxue-cpu/ai-skills.git
-Copy-Item -Recurse -Force '.\ai-skills\skills\cbz-workflow' "$env:USERPROFILE\.codex\skills\cbz-workflow"
-Copy-Item -Recurse -Force '.\ai-skills\skills\epub-repair' "$env:USERPROFILE\.codex\skills\epub-repair"
-Copy-Item -Recurse -Force '.\ai-skills\skills\calibre-workflow' "$env:USERPROFILE\.codex\skills\calibre-workflow"
-Copy-Item -Recurse -Force '.\ai-skills\skills\skill-repository-manager' "$env:USERPROFILE\.codex\skills\skill-repository-manager"
-Copy-Item -Recurse -Force '.\ai-skills\skills\humanizer-zh' "$env:USERPROFILE\.codex\skills\humanizer-zh"
-Copy-Item -Recurse -Force '.\ai-skills\skills\txt-to-epub-template' "$env:USERPROFILE\.codex\skills\txt-to-epub-template"
-Copy-Item -Recurse -Force '.\ai-skills\skills\correction-memory' "$env:USERPROFILE\.codex\skills\correction-memory"
-```
+按 [新手教程](新手入门.md) 下载 ZIP 并创建 `.venv`，先运行只读检查，再按需复制一个完整 Skill 目录。教程提供目标已存在时停止的安装命令，以及更新前备份与恢复步骤，避免直接覆盖旧安装。
 
-安装后重启 Codex。若只需要一个 Skill，只复制对应子目录即可。`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。安装 CBZ 中 JMComic 下载与打包功能的可选依赖：
-
-```powershell
-python -m pip install -r skills/cbz-workflow/scripts/jmcomic-download-pack/requirements.txt
-python skills/cbz-workflow/scripts/jmcomic-download-pack/check_dependencies.py
-```
+`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。JMComic 的额外固定依赖请按新手教程装到专用虚拟环境，基础 EPUB 检查不需要它们。
 
 ## 快速开始
 
