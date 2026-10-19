@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub 项目首页整理"
+  short_description: "整理仓库简介与 README，突出下载入口、实测截图、快速上手及问题反馈"
+  default_prompt: "使用 $github-project-page 整理这个仓库的首页，让新手容易找到下载、使用和反馈入口。"

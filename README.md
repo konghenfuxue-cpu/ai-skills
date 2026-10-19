@@ -175,3 +175,8 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 ## 来源与致谢
 
 本仓库采用 [MIT 许可](LICENSE)。中文润色工具的上游来源与许可单独列在 [humanizer-zh 说明](skills/humanizer-zh/README.md#来源与许可)。参与维护前请阅读 [贡献说明](CONTRIBUTING.md) 与 [安全说明](SECURITY.md)。
+## GitHub 项目首页整理
+
+[github-project-page](skills/github-project-page/SKILL.md)：整理仓库简介与 README，突出真实下载入口、实测截图、快速上手、常见问题和问题反馈。适配桌面软件、库与 CLI 的入口，不代替 GitHub Pages 网站开发，不自动授权发布新版本。
+
+2026-10-19：Skill 格式校验及本机安装副本哈希核对通过；隔离模型评测和跨新聊天自动触发尚未验证。
