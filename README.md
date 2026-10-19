@@ -1,73 +1,79 @@
-# 数字书库与漫画 Agent Skills
+<h1 align="center">数字书库与漫画 Agent Skills</h1>
+
+<p align="center">检查 EPUB、整理 CBZ、制作 EPUB，让重复的文件处理有一套可复用流程。</p>
+
+<p align="center">
+  <a href="https://github.com/konghenfuxue-cpu/ai-skills/archive/refs/heads/main.zip"><img src="https://img.shields.io/badge/Download-Source_ZIP-2563eb?style=for-the-badge&logo=github&logoColor=white" alt="下载当前工具集源码 ZIP"></a>
+  <a href="新手入门.md"><img src="https://img.shields.io/badge/Read-Getting_Started-334155?style=for-the-badge" alt="阅读新手安装与使用教程"></a>
+</p>
 
 [![Tests](https://github.com/konghenfuxue-cpu/ai-skills/actions/workflows/tests.yml/badge.svg)](https://github.com/konghenfuxue-cpu/ai-skills/actions/workflows/tests.yml)
-[![Latest release](https://img.shields.io/github/v/release/konghenfuxue-cpu/ai-skills)](https://github.com/konghenfuxue-cpu/ai-skills/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-5c8b84)](LICENSE)
 
-## 这个项目有什么用
+**[下载工具集](https://github.com/konghenfuxue-cpu/ai-skills/archive/refs/heads/main.zip) · [从零开始](新手入门.md) · [按任务选工具](#先选你要完成的任务)**
 
-这是一个面向个人数字书库的公开 Agent Skills 工具集，让 Codex 按经过测试的流程处理漫画、电子书和 Calibre 书库，而不必在每次任务中重新说明工具、路径规则和安全要求。
+这里有可直接运行的 Python 脚本，也有供 Codex 读取的 Skill。第一次只检查一个 EPUB 副本，不必安装全部 Skill。项目不附书籍、漫画或独立图形界面。
 
-它目前可以：
+本页与新手教程对应 `main`；[最新正式标签 v1.1.0](https://github.com/konghenfuxue-cpu/ai-skills/releases/tag/v1.1.0) 是较早的源码快照，没有 EXE，缺少后续部分内容。
 
-- 检查、合并、拆分和整理 CBZ，并维护 `ComicInfo.xml` 与可逆合并元数据；
-- 从合并后的 CBZ 中删除指定子合集，同时保留剩余内容的拆分还原能力；
-- 检查 EPUB 的 ZIP 包装、OPF、目录和章节引用，并安全修复可确定的问题；
-- 将中文小说 TXT 按卷、章、完本感言和末尾番外转换为 EPUB 3，并生成封面、简介、制作说明与可点击分级目录；
-- 只读审计 Calibre 书库，定位缺失格式、异常路径和重复候选；
-- 润色中文文章、评论和文档，同时保留事实、确定程度和作者声音；
-- 管理这些 Skill 的测试、GitHub 备份、安装、更新与恢复流程。
-- 记录并复用私人纠错规则，减少同类失误反复出现。
+## 实际效果
 
-项目强调本地处理、保留原文件、修改前确认和修改后验证。它不包含漫画或电子书文件，不绕过 DRM，也不会在没有任务请求时自动扫描书库。
+下面是原创两章 TXT 的实跑结果，文件路径已简化。转换与检查均退出 0：
 
-当前工作流主要在 Windows 11、PowerShell 7 和 Python 3.11 环境验证。
+```text
+输入：练习.txt → 输出：我的练习.epub
+识别：0 卷，2 个正文段落
+目录：两章均有可解析的跳转目标
+ZIP 成员：17
+[通过] 未发现结构问题。
+```
+
+生成了新 EPUB，原 TXT 的 SHA-256 未变。这里展示的是脚本结果；阅读器视觉与 Codex 自动发现不在这项结果内。[查看验证范围](docs/beginner-verification.md)
+
+## 三步开始
+
+| 步骤 | 操作 | 结果 |
+| --- | --- | --- |
+| 1 · 下载 | 下载上方 ZIP，全部解压，进入直接含 `README.md` 和 `skills` 的那层 | 本地有完整脚本和资源，无需 Git |
+| 2 · 准备 Python | 按[新手教程](新手入门.md#2-安装-python并确认能调用)安装或确认 Python 3.11，再创建 `.venv` | 使用项目独立环境；基础 EPUB 检查不需第三方包 |
+| 3 · 检查副本 | 把一个合法 EPUB 副本放进 `练习文件`，命名为 `示例.epub`，运行下方命令 | 终端显示基础检查结果，不改书籍 |
+
+在解压后的仓库根目录打开 PowerShell：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 .\skills\epub-repair\scripts\epub_check_repair.py '.\练习文件\示例.epub'
+```
+
+需要 Codex 协助时，再按[教程的可选安装步骤](新手入门.md#5-可选让-codex-使用一个-skill)安装一个完整 Skill。当前官方目录与既有旧目录可能不同，先确认当前客户端使用的位置，不要直接覆盖已有安装。
 
 ## 先选你要完成的任务
 
-| 你想做什么 | 从这里开始 |
-| --- | --- |
-| 检查、合并、拆分漫画 CBZ | [CBZ Workflow 使用说明](CBZ-Workflow使用说明.md) |
-| 排查 EPUB 损坏或导入失败 | [EPUB Repair](skills/epub-repair/SKILL.md) |
-| 把中文小说 TXT 制作为 EPUB | [TXT 转 EPUB 模板](skills/txt-to-epub-template/SKILL.md) |
-| 查找 Calibre 书库缺失文件与重复候选 | [Calibre Workflow](skills/calibre-workflow/SKILL.md) |
-| 润色中文文字 | [Humanizer-zh](skills/humanizer-zh/README.md) |
+| 任务 | 工具 | 入口 |
+| --- | --- | --- |
+| 检查、合并、拆分 CBZ，维护可逆合集 | `cbz-workflow` | [CBZ 使用说明](CBZ-Workflow使用说明.md) |
+| 检查 EPUB 包装与基础结构 | `epub-repair` | [检查与修复边界](skills/epub-repair/SKILL.md) |
+| 把中文 TXT 制作为带目录的 EPUB | `txt-to-epub-template` | [制作说明](skills/txt-to-epub-template/SKILL.md) |
+| 查 Calibre 缺失文件与重复候选 | `calibre-workflow` | [只读审计](skills/calibre-workflow/SKILL.md) |
+| 润色中文并保留原意与确定程度 | `humanizer-zh` | [使用与示例](skills/humanizer-zh/README.md) |
 
-**第一次使用？** 先读 [从下载到第一次成功检查](新手入门.md)，从 ZIP 解压、Python 安装与独立环境开始，只检查一个文件副本。核心书库功能可直接运行 Python 脚本；需要让 Codex 按工作流执行时，再安装对应 Skill。它不是独立的图形界面书库软件，也不提供书籍资源。
+另有 Skill 仓库管理和私人纠错记忆工具，属于维护辅助功能；处理一本书不必全装。主要验证环境是 Windows 11、Python 3.11，维护流程另使用 PowerShell 7。
 
-仓库另附 Skill 仓库管理与私人纠错记忆工具，属于维护辅助功能；不必为了处理一本书安装全部技能。
+## 常见问题
 
-当前公开稳定版：[`v1.1.0`](https://github.com/konghenfuxue-cpu/ai-skills/releases/tag/v1.1.0)。无需 GitHub 账号即可克隆或下载。
+**可以不装 Codex 吗？** 可以。文件检查、转换等核心脚本可用 Python 直接运行；让 AI 按 Skill 工作流执行才需要相应客户端。
 
-详细教程：
+**为什么没有窗口？** 命令行结果显示在终端。请在 PowerShell 运行，不要根据双击 `.py` 后窗口一闪而过判断成功。
 
-- [新手入门与常见问题](新手入门.md)
-- [旧 v1.0.0 安装说明（历史）](公开版安装与使用教程.md)
-- [CBZ Workflow 使用说明](CBZ-Workflow使用说明.md)
-- [Skill 仓库管理使用说明](Skill仓库管理使用说明.md)
-- [EPUB Repair 指南](skills/epub-repair/SKILL.md)
-- [Calibre Workflow 指南](skills/calibre-workflow/SKILL.md)
-- [Humanizer-zh 指南](skills/humanizer-zh/README.md)
+**检查通过等于书籍完全没问题吗？** 不等于。基础结构检查不能代替正文核对、目标阅读器和完整 EPUBCheck 验收。
 
-参与和维护：
+**修复会覆盖已有文件吗？** 首次只检查。修复或转换请用副本和全新输出名；当前 EPUB 修复入口对已有输出的保护有限，不能据“生成新文件”的说明放心复用旧输出路径。
 
-- [贡献指南](CONTRIBUTING.md)
-- [安全策略](SECURITY.md)
-- [社区行为准则](CODE_OF_CONDUCT.md)
-- [变更日志](CHANGELOG.md)
+**要装 JMComic 依赖吗？** 基础 EPUB/Calibre 检查不需要。只有下载及图片处理路线才按[教程](新手入门.md#6-其他任务需要什么)在同一虚拟环境安装固定依赖；依赖加载通过不代表网络站点可用。
 
-## 安装前准备
+**数据在哪里？** 原稿保留在你选的位置，输出与报告由命令参数或对应入口决定，不会自动上传或跨设备同步。不要将真实书籍、Cookie 或凭据提交 GitHub。
 
-- 使用 Windows 与 64 位 Python 3.11 或更高版本；新手下载 ZIP 不需要 Git。基础示例可用 Windows 自带 PowerShell，维护脚本另按各自要求准备 PowerShell 7。
-- 先确认当前 Codex 的 Skill 发现目录。当前官方文档使用 `%USERPROFILE%\.agents\skills`，既有旧版安装可能使用 `.codex\skills`；不要在两处重复安装同名 Skill，详见新手教程。
-- `cbz-workflow` 的基础 CBZ 功能只使用 Python 标准库；JMComic 下载功能额外需要 `jmcomic`、`Pillow` 和 `zhconv`。
-- 运行前先把 Skill 中的本机路径配置改成自己的目录，并使用小型副本测试。
-
-## 安装
-
-按 [新手教程](新手入门.md) 下载 ZIP 并创建 `.venv`，先运行只读检查，再按需复制一个完整 Skill 目录。教程提供目标已存在时停止的安装命令，以及更新前备份与恢复步骤，避免直接覆盖旧安装。
-
-`epub-repair` 和 `calibre-workflow` 只依赖 Python 标准库。JMComic 的额外固定依赖请按新手教程装到专用虚拟环境，基础 EPUB 检查不需要它们。
+<details>
+<summary>更多调用示例、安装边界与维护说明</summary>
 
 ## 快速开始
 
@@ -163,3 +169,9 @@ EPUB 的 `--repair` 会创建新文件而非覆盖原文件；Calibre 审计以 
 - 模板和静态资源放入 `assets/`；
 - 测试案例放入 `evals/`；
 - 不保存真实漫画、电子书、密码或 API 密钥。
+
+</details>
+
+## 来源与致谢
+
+本仓库采用 [MIT 许可](LICENSE)。中文润色工具的上游来源与许可单独列在 [humanizer-zh 说明](skills/humanizer-zh/README.md#来源与许可)。参与维护前请阅读 [贡献说明](CONTRIBUTING.md) 与 [安全说明](SECURITY.md)。
