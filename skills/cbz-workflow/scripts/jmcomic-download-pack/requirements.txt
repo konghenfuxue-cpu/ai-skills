@@ -3,5 +3,5 @@
 jmcomic==2.7.4
 rich==15.0.0
 PyYAML==6.0.3
-Pillow==12.3.0
+Pillow==13.0.0
 zhconv==1.4.3
